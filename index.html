@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pablo Muñoz Suárez</title>
   <style>
     :root {
-      --bg: #111315;
-      --panel: #171a1d;
-      --line: #2a2f35;
-      --text: #f3f4f6;
-      --muted: #c2c7cf;
-      --accent: #31a8d8;
+      --bg: #0d0f12;
+      --panel: #14181d;
+      --panel-soft: #101419;
+      --line: #262c33;
+      --text: #f2f4f7;
+      --muted: #b8c0ca;
+      --accent: #4ea3d8;
     }
 
     * {
@@ -24,7 +25,7 @@
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
       background: var(--bg);
       color: var(--text);
     }
@@ -39,18 +40,18 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1160px;
       margin: 0 auto;
       padding: 0 28px;
     }
 
     .topbar {
-      border-bottom: 1px solid var(--line);
       position: sticky;
       top: 0;
-      background: rgba(17, 19, 21, 0.96);
-      backdrop-filter: blur(8px);
       z-index: 20;
+      background: rgba(13, 15, 18, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
     }
 
     .nav {
@@ -58,12 +59,12 @@
       justify-content: flex-end;
       gap: 26px;
       padding: 22px 0;
-      font-size: 1.08rem;
+      font-size: 1.05rem;
     }
 
     .nav a {
       color: var(--text);
-      opacity: 0.9;
+      opacity: 0.95;
     }
 
     .nav a.active,
@@ -74,87 +75,88 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1.6fr 0.9fr;
-      gap: 60px;
-      padding: 58px 0 44px;
+      grid-template-columns: 1.55fr 0.85fr;
+      gap: 68px;
+      padding: 58px 0 50px;
       align-items: start;
     }
 
-    .hero h1 {
-      margin: 0 0 24px;
-      font-size: 3.3rem;
-      font-weight: 700;
+    h1 {
+      margin: 0 0 28px;
+      font-size: 3.35rem;
       line-height: 1.05;
+      font-weight: 400;
       letter-spacing: 0.01em;
     }
 
-    .hero h1 span {
-      font-weight: 300;
-    }
-
-    .hero p {
-      color: var(--text);
-      font-size: 1.16rem;
-      line-height: 1.75;
-      margin: 0 0 18px;
+    .lead {
+      font-size: 1.2rem;
+      line-height: 1.72;
+      margin: 0 0 22px;
       max-width: 760px;
+      color: var(--text);
     }
 
     .side {
-      padding-top: 8px;
+      padding-top: 6px;
     }
 
-    .photo {
+    .photo-frame {
       width: 100%;
       max-width: 320px;
-      aspect-ratio: 4 / 5;
-      background: linear-gradient(135deg, #20252b, #15181b);
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 1rem;
-      text-align: center;
-      padding: 18px;
       margin-left: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .photo-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
     }
 
     .contact-box {
       margin-top: 22px;
       margin-left: auto;
       max-width: 320px;
-      color: var(--text);
       font-size: 1.05rem;
-      line-height: 1.7;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .contact-box strong {
+      display: inline-block;
+      margin-bottom: 6px;
     }
 
     .icons {
       display: flex;
-      gap: 24px;
-      margin-top: 36px;
-      align-items: center;
+      gap: 14px;
       flex-wrap: wrap;
+      margin-top: 34px;
+      align-items: center;
     }
 
     .icon-link {
+      width: 54px;
+      height: 54px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 56px;
-      height: 56px;
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: var(--panel);
+      background: var(--panel-soft);
       color: var(--text);
-      font-size: 1.6rem;
+      font-size: 1.45rem;
       text-decoration: none;
     }
 
     .icon-link:hover {
-      color: var(--accent);
       border-color: var(--accent);
+      color: var(--accent);
       text-decoration: none;
     }
 
@@ -165,15 +167,15 @@
       font-size: 0.98rem;
     }
 
-    section {
-      padding: 42px 0;
+    section.content-section {
       border-top: 1px solid var(--line);
+      padding: 40px 0;
     }
 
-    section h2 {
+    h2 {
       margin: 0 0 18px;
-      font-size: 2rem;
-      color: var(--text);
+      font-size: 1.95rem;
+      font-weight: 500;
     }
 
     .card {
@@ -182,50 +184,54 @@
       border-radius: 8px;
       padding: 22px;
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.75;
+      font-size: 1.03rem;
     }
 
     .cv-link {
       display: inline-block;
-      margin-top: 10px;
-      padding: 12px 16px;
+      margin-top: 12px;
+      padding: 11px 16px;
       border: 1px solid var(--accent);
       border-radius: 8px;
       color: var(--accent);
-      text-decoration: none;
     }
 
     .cv-link:hover {
-      background: rgba(49, 168, 216, 0.08);
+      background: rgba(78, 163, 216, 0.08);
       text-decoration: none;
     }
 
     footer {
       border-top: 1px solid var(--line);
-      padding: 28px 0 40px;
+      padding: 28px 0 42px;
       color: var(--muted);
       font-size: 0.96rem;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 920px) {
       .hero {
         grid-template-columns: 1fr;
         gap: 34px;
       }
 
-      .photo,
+      .photo-frame,
       .contact-box {
         margin-left: 0;
       }
 
       .nav {
         justify-content: center;
-        flex-wrap: wrap;
         gap: 18px;
+        flex-wrap: wrap;
       }
 
-      .hero h1 {
+      h1 {
         font-size: 2.6rem;
+      }
+
+      .lead {
+        font-size: 1.08rem;
       }
     }
   </style>
@@ -239,6 +245,7 @@
         <a href="#cv">CV</a>
         <a href="#teaching">Teaching</a>
         <a href="#talks">Talks</a>
+        <a href="#concerts">Concerts</a>
       </nav>
     </div>
   </header>
@@ -246,23 +253,26 @@
   <main class="container">
     <section id="about" class="hero">
       <div>
-        <h1><strong>Pablo</strong> <span>Muñoz Suárez</span></h1>
+        <h1>Pablo Muñoz Suárez</h1>
 
-        <p>
-          I am Pablo Muñoz Suárez, affiliated with the <a href="#">University of Klagenfurt</a>.
-          This website will gather information about my academic profile, work, teaching, talks,
-          and future publications.
+        <p class="lead">
+          I am currently a PhD researcher in the <a href="https://imsc.uni-graz.at/mr-dynamo/projects/idcontrol" target="_blank" rel="noopener noreferrer">IdCONTROL</a>
+          project, part of the <a href="https://imsc.uni-graz.at/mr-dynamo/" target="_blank" rel="noopener noreferrer">MR-DYNAMO</a>
+          Austrian-funded initiative. Since October 2025, I have been working with
+          <a href="https://me.aau.at/~bkaltenb/" target="_blank" rel="noopener noreferrer">Barbara Kaltenbacher</a>
+          at the <a href="https://www.aau.at/en/mathematics/" target="_blank" rel="noopener noreferrer">Department of Mathematics</a>
+          of the University of Klagenfurt.
         </p>
 
-        <p>
-          For now, this page serves as a personal academic homepage with a simple structure inspired
-          by a clean research-style layout. It can later be expanded with a biography, projects,
-          publications, teaching material, presentations, and a downloadable curriculum vitae.
+        <p class="lead">
+          This website is intended as a simple academic homepage where I will gradually gather
+          information about my research, publications, curriculum vitae, teaching activities,
+          talks, and other academic work.
         </p>
 
-        <p>
-          You can contact me through my institutional or personal email. As I continue building this
-          site, I will add more detailed content in each section.
+        <p class="lead">
+          You can contact me through either my institutional or personal email. More content will
+          be added here as the site continues to grow.
         </p>
 
         <div class="icons">
@@ -273,49 +283,59 @@
       </div>
 
       <aside class="side">
-        <div class="photo">
-          Aquí puedes poner tu foto más adelante.
+        <div class="photo-frame">
+          <img src="pablo_munoz.jpg" alt="Portrait of Pablo Muñoz Suárez" />
         </div>
 
         <div class="contact-box">
           <strong>University of Klagenfurt</strong><br />
-          Klagenfurt am Wörthersee, Austria<br /><br />
+          N.2.20, University of Klagenfurt<br />
+          Universitätsstraße 65–67,<br />
+          9020 Klagenfurt am Wörthersee, AUSTRIA<br /><br />
           <a href="mailto:pablo.munoz@aau.at">pablo.munoz@aau.at</a><br />
           <a href="mailto:pamunozsu@gmail.com">pamunozsu@gmail.com</a>
         </div>
       </aside>
     </section>
 
-    <section id="publications">
+    <section id="publications" class="content-section">
       <h2>Publications</h2>
       <div class="card">
-        This section is ready for your future journal papers, conference articles, preprints, or
-        thesis-related outputs.
+        This section is ready for journal papers, conference articles, preprints, working papers,
+        and thesis-related outputs.
       </div>
     </section>
 
-    <section id="cv">
+    <section id="cv" class="content-section">
       <h2>CV</h2>
       <div class="card">
-        You can later add a downloadable CV here as a PDF.
+        You can later add a downloadable PDF version of your curriculum vitae here.
         <br />
         <a class="cv-link" href="#">Download CV</a>
       </div>
     </section>
 
-    <section id="teaching">
+    <section id="teaching" class="content-section">
       <h2>Teaching</h2>
       <div class="card">
-        This section can include courses, tutorials, lecture notes, mentoring activities, or student
-        supervision.
+        This section can include courses, tutorials, lecture notes, supervision, and mentoring
+        activities.
       </div>
     </section>
 
-    <section id="talks">
+    <section id="talks" class="content-section">
       <h2>Talks</h2>
       <div class="card">
-        Here you can add conference talks, invited seminars, workshop presentations, or outreach
+        Here you can add conference talks, invited seminars, workshop presentations, and outreach
         activities.
+      </div>
+    </section>
+
+    <section id="concerts" class="content-section">
+      <h2>Concerts</h2>
+      <div class="card">
+        This section is available for concerts, music-related activities, or performances you may
+        want to share.
       </div>
     </section>
   </main>
