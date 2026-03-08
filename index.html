@@ -3,116 +3,327 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi página personal</title>
+  <title>Pablo Muñoz Suárez</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #111827;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
+      --bg: #111315;
+      --panel: #171a1d;
+      --line: #2a2f35;
+      --text: #f3f4f6;
+      --muted: #c2c7cf;
+      --accent: #31a8d8;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      background: rgba(17, 19, 21, 0.96);
+      backdrop-filter: blur(8px);
+      z-index: 20;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: flex-end;
+      gap: 26px;
+      padding: 22px 0;
+      font-size: 1.08rem;
+    }
+
+    .nav a {
+      color: var(--text);
+      opacity: 0.9;
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: 60px;
+      padding: 58px 0 44px;
+      align-items: start;
+    }
+
+    .hero h1 {
+      margin: 0 0 24px;
+      font-size: 3.3rem;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.01em;
+    }
+
+    .hero h1 span {
+      font-weight: 300;
+    }
+
+    .hero p {
+      color: var(--text);
+      font-size: 1.16rem;
+      line-height: 1.75;
+      margin: 0 0 18px;
+      max-width: 760px;
+    }
+
+    .side {
+      padding-top: 8px;
+    }
+
+    .photo {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(135deg, #20252b, #15181b);
+      border: 1px solid var(--line);
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      color: var(--muted);
+      font-size: 1rem;
+      text-align: center;
+      padding: 18px;
+      margin-left: auto;
     }
 
-    .card {
-      width: 100%;
-      max-width: 800px;
-      background: rgba(17, 24, 39, 0.92);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 18px;
-      padding: 40px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 2.5rem;
-      line-height: 1.1;
-    }
-
-    h1 span {
-      color: var(--accent);
-    }
-
-    p {
+    .contact-box {
+      margin-top: 22px;
+      margin-left: auto;
+      max-width: 320px;
+      color: var(--text);
       font-size: 1.05rem;
       line-height: 1.7;
-      color: var(--muted);
     }
 
-    .buttons {
-      margin-top: 28px;
+    .icons {
       display: flex;
-      gap: 12px;
+      gap: 24px;
+      margin-top: 36px;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .btn {
-      text-decoration: none;
-      padding: 12px 18px;
+    .icon-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--line);
       border-radius: 10px;
-      font-weight: bold;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-      display: inline-block;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 1.6rem;
+      text-decoration: none;
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #082f49;
+    .icon-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      text-decoration: none;
     }
 
-    .btn-secondary {
-      border: 1px solid rgba(148, 163, 184, 0.35);
+    .icon-note {
+      width: 100%;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    section {
+      padding: 42px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    section h2 {
+      margin: 0 0 18px;
+      font-size: 2rem;
       color: var(--text);
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
-    .footer {
-      margin-top: 30px;
-      font-size: 0.95rem;
-      color: #cbd5e1;
+    .cv-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 12px 16px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .cv-link:hover {
+      background: rgba(49, 168, 216, 0.08);
+      text-decoration: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0 40px;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+
+      .photo,
+      .contact-box {
+        margin-left: 0;
+      }
+
+      .nav {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      .hero h1 {
+        font-size: 2.6rem;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="card">
-    <h1>Hola, soy <span>Tu Nombre</span></h1>
-    <p>
-      Bienvenido/a a mi página personal. Aquí puedes poner una breve presentación sobre ti,
-      tu trabajo, tus estudios, tus proyectos o cualquier otra información que quieras mostrar.
-    </p>
-    <p>
-      Esta es una plantilla inicial en HTML simple para que la subas a GitHub Pages como tu
-      archivo <strong>index.html</strong>.
-    </p>
-
-    <div class="buttons">
-      <a class="btn btn-primary" href="#">Ver proyectos</a>
-      <a class="btn btn-secondary" href="mailto:correo@ejemplo.com">Contacto</a>
+  <header class="topbar">
+    <div class="container">
+      <nav class="nav">
+        <a class="active" href="#about">About</a>
+        <a href="#publications">Publications</a>
+        <a href="#cv">CV</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#talks">Talks</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="footer">
-      <p>Actualiza este archivo con tu nombre, enlaces, correo y contenido.</p>
-    </div>
+  <main class="container">
+    <section id="about" class="hero">
+      <div>
+        <h1><strong>Pablo</strong> <span>Muñoz Suárez</span></h1>
+
+        <p>
+          I am Pablo Muñoz Suárez, affiliated with the <a href="#">University of Klagenfurt</a>.
+          This website will gather information about my academic profile, work, teaching, talks,
+          and future publications.
+        </p>
+
+        <p>
+          For now, this page serves as a personal academic homepage with a simple structure inspired
+          by a clean research-style layout. It can later be expanded with a biography, projects,
+          publications, teaching material, presentations, and a downloadable curriculum vitae.
+        </p>
+
+        <p>
+          You can contact me through my institutional or personal email. As I continue building this
+          site, I will add more detailed content in each section.
+        </p>
+
+        <div class="icons">
+          <a class="icon-link" href="mailto:pablo.munoz@aau.at" title="Institutional email">✉</a>
+          <a class="icon-link" href="mailto:pamunozsu@gmail.com" title="Personal email">@</a>
+          <div class="icon-note">Feel free to contact me by email.</div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="photo">
+          Aquí puedes poner tu foto más adelante.
+        </div>
+
+        <div class="contact-box">
+          <strong>University of Klagenfurt</strong><br />
+          Klagenfurt am Wörthersee, Austria<br /><br />
+          <a href="mailto:pablo.munoz@aau.at">pablo.munoz@aau.at</a><br />
+          <a href="mailto:pamunozsu@gmail.com">pamunozsu@gmail.com</a>
+        </div>
+      </aside>
+    </section>
+
+    <section id="publications">
+      <h2>Publications</h2>
+      <div class="card">
+        This section is ready for your future journal papers, conference articles, preprints, or
+        thesis-related outputs.
+      </div>
+    </section>
+
+    <section id="cv">
+      <h2>CV</h2>
+      <div class="card">
+        You can later add a downloadable CV here as a PDF.
+        <br />
+        <a class="cv-link" href="#">Download CV</a>
+      </div>
+    </section>
+
+    <section id="teaching">
+      <h2>Teaching</h2>
+      <div class="card">
+        This section can include courses, tutorials, lecture notes, mentoring activities, or student
+        supervision.
+      </div>
+    </section>
+
+    <section id="talks">
+      <h2>Talks</h2>
+      <div class="card">
+        Here you can add conference talks, invited seminars, workshop presentations, or outreach
+        activities.
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="container">
+      © 2026 Pablo Muñoz Suárez · Academic homepage
+    </div>
+  </footer>
 </body>
 </html>
