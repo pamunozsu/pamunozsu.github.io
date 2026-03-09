@@ -172,6 +172,18 @@
       padding: 40px 0;
     }
 
+    section[data-tab] {
+      display: none;
+    }
+
+    section[data-tab].tab-active {
+      display: block;
+    }
+
+    #about[data-tab].tab-active {
+      display: grid;
+    }
+
     h2 {
       margin: 0 0 18px;
       font-size: 1.95rem;
@@ -240,18 +252,18 @@
   <header class="topbar">
     <div class="container">
       <nav class="nav">
-        <a class="active" href="#about">About</a>
-        <a href="#publications">Publications</a>
-        <a href="#cv">CV</a>
-        <a href="#teaching">Teaching</a>
-        <a href="#talks">Talks</a>
-        <a href="#concerts">Concerts</a>
+        <a class="active" href="#about" data-target="about">About</a>
+        <a href="#publications" data-target="publications">Publications</a>
+        <a href="#cv" data-target="cv">CV</a>
+        <a href="#teaching" data-target="teaching">Teaching</a>
+        <a href="#talks" data-target="talks">Talks</a>
+        <a href="#concerts" data-target="concerts">Concerts</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <section id="about" class="hero">
+    <section id="about" class="hero" data-tab>
       <div>
         <h1>Pablo Muñoz Suárez</h1>
 
@@ -307,7 +319,7 @@
       </aside>
     </section>
 
-    <section id="publications" class="content-section">
+    <section id="publications" class="content-section" data-tab>
       <h2>Publications</h2>
       <div class="card">
         This section is ready for journal papers, conference articles, preprints, working papers,
@@ -315,7 +327,7 @@
       </div>
     </section>
 
-    <section id="cv" class="content-section">
+    <section id="cv" class="content-section" data-tab>
       <h2>CV</h2>
       <div class="card">
         You can later add a downloadable PDF version of your curriculum vitae here.
@@ -324,7 +336,7 @@
       </div>
     </section>
 
-    <section id="teaching" class="content-section">
+    <section id="teaching" class="content-section" data-tab>
       <h2>Teaching</h2>
       <div class="card">
         This section can include courses, tutorials, lecture notes, supervision, and mentoring
@@ -332,7 +344,7 @@
       </div>
     </section>
 
-    <section id="talks" class="content-section">
+    <section id="talks" class="content-section" data-tab>
       <h2>Talks</h2>
       <div class="card">
         Here you can add conference talks, invited seminars, workshop presentations, and outreach
@@ -340,7 +352,7 @@
       </div>
     </section>
 
-    <section id="concerts" class="content-section">
+    <section id="concerts" class="content-section" data-tab>
       <h2>Concerts</h2>
       <div class="card">
         This section is available for concerts, music-related activities, or performances you may
@@ -354,5 +366,39 @@
       © 2026 Pablo Muñoz Suárez · Academic homepage
     </div>
   </footer>
+  <script>
+    const tabs = document.querySelectorAll('section[data-tab]');
+    const links = document.querySelectorAll('nav a[data-target]');
+
+    function showTab(id) {
+      tabs.forEach(s => s.classList.remove('tab-active'));
+      links.forEach(a => a.classList.remove('active'));
+
+      const section = document.getElementById(id);
+      if (section) section.classList.add('tab-active');
+
+      const link = document.querySelector(`nav a[data-target="${id}"]`);
+      if (link) link.classList.add('active');
+    }
+
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = link.dataset.target;
+        history.pushState(null, '', '#' + target);
+        showTab(target);
+      });
+    });
+
+    // Al cargar, mostrar la sección según el hash (o "about" por defecto)
+    const initial = location.hash.replace('#', '') || 'about';
+    showTab(initial);
+
+    // Soporte para el botón atrás/adelante del navegador
+    window.addEventListener('popstate', () => {
+      const id = location.hash.replace('#', '') || 'about';
+      showTab(id);
+    });
+  </script>
 </body>
 </html>
