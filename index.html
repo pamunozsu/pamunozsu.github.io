@@ -214,6 +214,165 @@
       text-decoration: none;
     }
 
+    /* ── Timeline (Experience) ── */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      border-left: 2px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .tl-item {
+      position: relative;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -36px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .tl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tl-role {
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tl-date {
+      font-size: 0.92rem;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .tl-institution {
+      font-size: 0.98rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Teaching cards ── */
+    .teaching-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .teaching-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.2s;
+    }
+
+    .teaching-card:hover {
+      border-color: var(--accent);
+    }
+
+    .tc-role {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tc-institution {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .tc-date {
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .tc-courses {
+      margin-top: 8px;
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.6;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .tc-courses strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── Talks list ── */
+    .talks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .talk-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .talk-date {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      color: var(--accent);
+      text-align: center;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .talk-title {
+      font-size: 1rem;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+
+    .talk-venue {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .talk-authors {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 600px) {
+      .talk-item {
+        grid-template-columns: 1fr;
+      }
+      .teaching-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     footer {
       border-top: 1px solid var(--line);
       padding: 28px 0 42px;
@@ -335,25 +494,153 @@
     </section>
 
     <section id="teaching" class="content-section" data-tab>
-      <h2>Teaching</h2>
-      <div class="card">
-        This section can include courses, tutorials, lecture notes, supervision, and mentoring
-        activities.
+      <h2>Teaching &amp; Mentoring</h2>
+      <div class="teaching-grid">
+
+        <div class="teaching-card">
+          <div class="tc-role">Associate Lecturer</div>
+          <div class="tc-institution">Institut für Mathematik, Universität Klagenfurt</div>
+          <div class="tc-date">Mar. 2026 – Aug. 2026</div>
+          <div class="tc-courses"><strong>Course:</strong> Partial Differential Equations, Exercises</div>
+        </div>
+
+        <div class="teaching-card">
+          <div class="tc-role">Associate Lecturer</div>
+          <div class="tc-institution">Faculty of Architecture and Urbanism, Universidad de Chile</div>
+          <div class="tc-date">Jan. 2025 – Aug. 2025</div>
+          <div class="tc-courses"><strong>Course:</strong> Mathematics and Applications to Design</div>
+        </div>
+
+        <div class="teaching-card">
+          <div class="tc-role">Part-Time Lecturer</div>
+          <div class="tc-institution">Department of Industrial Engineering, Universidad Andrés Bello</div>
+          <div class="tc-date">Nov. 2024 – Jan. 2025</div>
+          <div class="tc-courses"><strong>Course:</strong> Stochastic Analysis of Industrial Systems</div>
+        </div>
+
+        <div class="teaching-card">
+          <div class="tc-role">Teaching Assistant</div>
+          <div class="tc-institution">Department of Mathematics, Universidad Técnica Federico Santa María</div>
+          <div class="tc-date">Mar. 2017 – Jul. 2024</div>
+          <div class="tc-courses"><strong>Courses:</strong> Integro-Differential Calculus · Multivariable Calculus · Complex Analysis · Integro-Differential Electromagnetism · Introduction to Quantum Physics and Waves · Measure Theory · Functional Analysis · Partial Differential Equations · Numerical Analysis I &amp; II · Numerical Analysis in PDEs · Dynamical Systems · Bifurcation Theory · Differentiable Manifolds</div>
+        </div>
+
       </div>
     </section>
 
     <section id="talks" class="content-section" data-tab>
-      <h2>Talks</h2>
-      <div class="card">
-        Here you can add conference talks, invited seminars, workshop presentations, and outreach
-        activities.
+      <h2>Selected Talks</h2>
+      <div class="talks-list">
+
+        <div class="talk-item">
+          <div class="talk-date">January<br/>2024</div>
+          <div>
+            <div class="talk-authors">Muñoz, P.</div>
+            <div class="talk-title">"From Neurons to Thought: Building Blocks for a Theory of Living Beings and Consciousness. Bridges between Theories of Life and Consciousness."</div>
+            <div class="talk-venue">III Student Congress of Neuroscience — Universidad Autónoma de Chile <em>(Organizer &amp; Speaker)</em></div>
+          </div>
+        </div>
+
+        <div class="talk-item">
+          <div class="talk-date">October<br/>2023</div>
+          <div>
+            <div class="talk-authors">Muñoz, P., Guzmán-Lastra, F.</div>
+            <div class="talk-title">"Macroscale modeling of diel vertical migration in the presence of light gradients using SPDEs."</div>
+            <div class="talk-venue">Brazilian Workshop on Soft Matter — ICTP-SAIFR/IFT-UNESP, São Paulo, Brazil</div>
+          </div>
+        </div>
+
+        <div class="talk-item">
+          <div class="talk-date">May<br/>2023</div>
+          <div>
+            <div class="talk-authors">Muñoz, P., Guzmán-Lastra, F.</div>
+            <div class="talk-title">"Macroscale modeling of diel vertical migration in the presence of light gradients using SPDEs."</div>
+            <div class="talk-venue">XLII Congress of Marine Sciences — Universidad de los Lagos, Puerto Montt, Chile</div>
+          </div>
+        </div>
+
+        <div class="talk-item">
+          <div class="talk-date">April<br/>2023</div>
+          <div>
+            <div class="talk-authors">Muñoz, P., Orio, P., Aguirre, P.</div>
+            <div class="talk-title">"Bifurcation analysis in a dynamical model of excitatory-inhibitory neuronal networks under electrochemical synapses."</div>
+            <div class="talk-venue">XXXV Southern Zone Mathematics Meeting — Universidad de Concepción, Chile</div>
+          </div>
+        </div>
+
+        <div class="talk-item">
+          <div class="talk-date">December<br/>2022</div>
+          <div>
+            <div class="talk-authors">Muñoz, P.</div>
+            <div class="talk-title">"Bifurcation Analysis in a Dynamical Model of Excitatory-Inhibitory Neuronal Networks under Electrochemical Synapses."</div>
+            <div class="talk-venue">II Student Congress of Neuroscience — Pontificia Universidad Católica <em>(Organizer &amp; Speaker)</em></div>
+          </div>
+        </div>
+
+        <div class="talk-item">
+          <div class="talk-date">August<br/>2022</div>
+          <div>
+            <div class="talk-authors">Muñoz, P., Orio, P.</div>
+            <div class="talk-title">"Bifurcation Analysis in a Dynamical Model of Excitatory-Inhibitory Neuronal Networks under Electrochemical Synapses."</div>
+            <div class="talk-venue">National Meeting of Mathematical Engineering 2022 — Pontificia Universidad Católica</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <section id="experience" class="content-section" data-tab>
       <h2>Experience</h2>
-      <div class="card">
-        This section can include research positions, industry roles, internships, and other professional activities.
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-header">
+            <span class="tl-role">Research Assistant</span>
+            <span class="tl-date">Oct. 2025 – Feb. 2029</span>
+          </div>
+          <div class="tl-institution"><a href="https://imsc.uni-graz.at/mr-dynamo/" target="_blank" rel="noopener noreferrer">SFB MR-Dynamo Project</a> — Universität Klagenfurt</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-header">
+            <span class="tl-role">Research Engineer</span>
+            <span class="tl-date">Dec. 2023 – Present</span>
+          </div>
+          <div class="tl-institution"><a href="https://gema.umayor.cl/" target="_blank" rel="noopener noreferrer">Center for Genomics, Ecology and Environment (GEMA)</a> — Universidad Mayor</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-header">
+            <span class="tl-role">Research Engineer</span>
+            <span class="tl-date">Apr. 2021 – Oct. 2023</span>
+          </div>
+          <div class="tl-institution">Millennium Nucleus for Active Matter Physics — Universidad de Chile</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-header">
+            <span class="tl-role">Research Assistant</span>
+            <span class="tl-date">Nov. 2019 – Jan. 2023</span>
+          </div>
+          <div class="tl-institution">Center for Neuroscience of Valparaíso — Universidad de Valparaíso</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-header">
+            <span class="tl-role">Research Assistant</span>
+            <span class="tl-date">Jul. 2021 – Mar. 2022</span>
+          </div>
+          <div class="tl-institution">Millennium Nucleus for Applied Control and Inverse Problems — PUC</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-header">
+            <span class="tl-role">Research Assistant</span>
+            <span class="tl-date">Mar. 2021 – Dec. 2021</span>
+          </div>
+          <div class="tl-institution">Institute of Biomedical Research — Universidad Nacional de México</div>
+        </div>
+
       </div>
     </section>
 
