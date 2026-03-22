@@ -726,13 +726,14 @@
         lx += ddx * dt; ly += ddy * dt; lz += ddz * dt;
       }
 
-      // 3D → 2D projection (azimuth=20°, elevation=12°) — butterfly view
-      const AZ = 20 * Math.PI / 180, EL = 12 * Math.PI / 180;
-      const cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
+      // 3D → 2D projection (rotating azimuth, elevation=12°)
+      let AZ = 20 * Math.PI / 180;
+      const EL = 12 * Math.PI / 180;
       const cosEL = Math.cos(EL), sinEL = Math.sin(EL);
       const SCALE = 3.6, OX = W / 2, OY = 255;
 
       function proj(px, py, pz) {
+        const cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
         const rx = px * cosAZ - py * sinAZ;
         const ry = px * sinAZ + py * cosAZ;
         return [OX + rx * SCALE, OY + (ry * sinEL - pz * cosEL) * SCALE];
@@ -813,6 +814,7 @@
       for (let i = 0; i < 600; i++) stepLorenz();
 
       function animate() {
+        AZ += 0.003; // rotación lenta continua
         for (let i = 0; i < 4; i++) stepLorenz();
         ctx.fillStyle = '#0d0f12';
         ctx.fillRect(0, 0, W, H);
