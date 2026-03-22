@@ -478,7 +478,7 @@
           9020 Klagenfurt am Wörthersee, Austria<br /><br />
         </div>
 
-        <canvas id="lorenz" width="300" height="220" style="display:block; margin-top:22px; border-radius:8px; opacity:0.85;"></canvas>
+        <canvas id="lorenz" width="300" height="220" style="display:block; margin-top:22px; margin-left:auto; max-width:320px; width:100%; border-radius:8px; opacity:0.85;"></canvas>
       </aside>
     </section>
 
@@ -720,6 +720,43 @@
           ctx.lineTo(cx + bx * SCALE, cy - bz * SCALE);
           ctx.stroke();
         }
+
+        // Coordinate axes indicator (bottom-left corner)
+        ctx.shadowBlur = 0;
+        const ox = 28, oy = H - 22, len = 36;
+        const ac = 'rgba(200,210,220,0.7)';
+        ctx.strokeStyle = ac;
+        ctx.fillStyle = ac;
+        ctx.lineWidth = 1.2;
+
+        // X axis arrow
+        ctx.beginPath();
+        ctx.moveTo(ox, oy);
+        ctx.lineTo(ox + len, oy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(ox + len, oy);
+        ctx.lineTo(ox + len - 6, oy - 3);
+        ctx.lineTo(ox + len - 6, oy + 3);
+        ctx.closePath();
+        ctx.fill();
+
+        // Z axis arrow
+        ctx.beginPath();
+        ctx.moveTo(ox, oy);
+        ctx.lineTo(ox, oy - len);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(ox, oy - len);
+        ctx.lineTo(ox - 3, oy - len + 6);
+        ctx.lineTo(ox + 3, oy - len + 6);
+        ctx.closePath();
+        ctx.fill();
+
+        // Labels
+        ctx.font = 'italic 13px serif';
+        ctx.fillText('x', ox + len + 4, oy + 4);
+        ctx.fillText('z', ox - 4, oy - len - 4);
       }
 
       function loop() {
