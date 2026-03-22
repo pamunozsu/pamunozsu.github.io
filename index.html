@@ -374,49 +374,6 @@
       }
     }
 
-    /* ── Bat ── */
-    .bat-scene {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 50;
-      overflow: hidden;
-    }
-
-    .bat-fly {
-      position: absolute;
-      width: 90px;
-      top: 18%;
-      animation: bat-move 20s linear infinite;
-    }
-
-    @keyframes bat-move {
-      0%   { transform: translateX(110vw); }
-      100% { transform: translateX(-20vw); }
-    }
-
-    .bat-svg .wing-l {
-      transform-box: fill-box;
-      transform-origin: right center;
-      animation: flap-l 0.38s ease-in-out infinite alternate;
-    }
-
-    .bat-svg .wing-r {
-      transform-box: fill-box;
-      transform-origin: left center;
-      animation: flap-r 0.38s ease-in-out infinite alternate;
-    }
-
-    @keyframes flap-l {
-      from { transform: rotate(-28deg); }
-      to   { transform: rotate(14deg); }
-    }
-
-    @keyframes flap-r {
-      from { transform: rotate(28deg); }
-      to   { transform: rotate(-14deg); }
-    }
-
     footer {
       border-top: 1px solid var(--line);
       padding: 28px 0 42px;
@@ -520,6 +477,8 @@
           Universitätsstraße 65–67,<br />
           9020 Klagenfurt am Wörthersee, Austria<br /><br />
         </div>
+
+        <canvas id="lorenz" width="300" height="220" style="display:block; margin-top:22px; border-radius:8px; opacity:0.85;"></canvas>
       </aside>
     </section>
 
@@ -712,26 +671,65 @@
       © 2026 Pablo Muñoz Suárez · Academic homepage
     </div>
   </footer>
-  <div class="bat-scene">
-    <div class="bat-fly">
-      <svg class="bat-svg" viewBox="0 0 120 65" xmlns="http://www.w3.org/2000/svg">
-        <g class="wing-l">
-          <path d="M50,38 C35,26 14,20 2,29 C13,40 32,42 49,40 Z" fill="#b8c0ca"/>
-        </g>
-        <g class="wing-r">
-          <path d="M70,38 C85,26 106,20 118,29 C107,40 88,42 71,40 Z" fill="#b8c0ca"/>
-        </g>
-        <ellipse cx="60" cy="41" rx="11" ry="9" fill="#b8c0ca"/>
-        <circle cx="60" cy="28" r="9" fill="#b8c0ca"/>
-        <polygon points="52,23 47,11 57,21" fill="#b8c0ca"/>
-        <polygon points="68,23 73,11 63,21" fill="#b8c0ca"/>
-        <circle cx="56" cy="27" r="2" fill="#0d0f12"/>
-        <circle cx="64" cy="27" r="2" fill="#0d0f12"/>
-      </svg>
-    </div>
-  </div>
-
   <script>
+    // ── Lorenz attractor ──
+    (function() {
+      const canvas = document.getElementById('lorenz');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+
+      const sigma = 10, rho = 28, beta = 8 / 3, dt = 0.005;
+      let x = 0.1, y = 0, z = 0;
+
+      // Warm up — get onto the attractor
+      for (let i = 0; i < 800; i++) {
+        const dx = sigma * (y - x);
+        const dy = x * (rho - z) - y;
+        const dz = x * y - beta * z;
+        x += dx * dt; y += dy * dt; z += dz * dt;
+      }
+
+      const trail = [];
+      const TRAIL = 500;
+      const SCALE = 4.8;
+      const cx = W / 2, cy = H - 10;
+
+      function step() {
+        const dx = sigma * (y - x);
+        const dy = x * (rho - z) - y;
+        const dz = x * y - beta * z;
+        x += dx * dt; y += dy * dt; z += dz * dt;
+        trail.push([x, z]);
+        if (trail.length > TRAIL) trail.shift();
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(13,15,18,0.18)';
+        ctx.fillRect(0, 0, W, H);
+
+        for (let i = 1; i < trail.length; i++) {
+          const alpha = i / trail.length;
+          const [ax, az] = trail[i - 1];
+          const [bx, bz] = trail[i];
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(78,163,216,${alpha * 0.95})`;
+          ctx.lineWidth = 1.4;
+          ctx.shadowColor = 'rgba(78,163,216,0.4)';
+          ctx.shadowBlur = alpha * 6;
+          ctx.moveTo(cx + ax * SCALE, cy - az * SCALE);
+          ctx.lineTo(cx + bx * SCALE, cy - bz * SCALE);
+          ctx.stroke();
+        }
+      }
+
+      function loop() {
+        for (let i = 0; i < 3; i++) step();
+        draw();
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
+
     const tabs = document.querySelectorAll('section[data-tab]');
     const links = document.querySelectorAll('nav a[data-target]');
 
