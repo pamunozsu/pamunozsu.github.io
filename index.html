@@ -513,7 +513,7 @@
 
         <div class="lorenz-block">
           <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Lorenz_system" target="_blank" rel="noopener noreferrer">Lorenz Attractor</a>
-          <canvas id="lorenz" width="380" height="280" style="display:block; width:100%; border-radius:8px; opacity:0.85;"></canvas>
+          <canvas id="lorenz" width="380" height="320" style="display:block; width:100%; border-radius:8px; opacity:0.9;"></canvas>
           <div class="lorenz-eq" id="lorenz-eq">
             \[\begin{cases} \dot{x} = \sigma(y - x) \\ \dot{y} = x(\rho - z) - y \\ \dot{z} = xy - \beta z \end{cases}\]
             \(\sigma = 10,\quad \rho = 28,\quad \beta = \tfrac{8}{3}\)
@@ -712,99 +712,117 @@
     </div>
   </footer>
   <script>
-    // ── Lorenz attractor ──
-    (function() {
+    // ── Lorenz attractor 3D ──
+    (function () {
       const canvas = document.getElementById('lorenz');
       const ctx = canvas.getContext('2d');
       const W = canvas.width, H = canvas.height;
 
+      // Lorenz parameters
       const sigma = 10, rho = 28, beta = 8 / 3, dt = 0.005;
-      let x = 0.1, y = 0, z = 0;
-
-      // Warm up — get onto the attractor
-      for (let i = 0; i < 800; i++) {
-        const dx = sigma * (y - x);
-        const dy = x * (rho - z) - y;
-        const dz = x * y - beta * z;
-        x += dx * dt; y += dy * dt; z += dz * dt;
+      let lx = 0.1, ly = 0, lz = 0;
+      for (let i = 0; i < 1000; i++) {
+        const ddx = sigma * (ly - lx), ddy = lx * (rho - lz) - ly, ddz = lx * ly - beta * lz;
+        lx += ddx * dt; ly += ddy * dt; lz += ddz * dt;
       }
 
-      const trail = [];
-      const TRAIL = 500;
-      const SCALE = 4.8;
-      const cx = W / 2, cy = H - 10;
+      // 3D → 2D projection (azimuth=45°, elevation=25°)
+      const AZ = 45 * Math.PI / 180, EL = 25 * Math.PI / 180;
+      const cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
+      const cosEL = Math.cos(EL), sinEL = Math.sin(EL);
+      const SCALE = 3.2, OX = W / 2, OY = 235;
 
-      function step() {
-        const dx = sigma * (y - x);
-        const dy = x * (rho - z) - y;
-        const dz = x * y - beta * z;
-        x += dx * dt; y += dy * dt; z += dz * dt;
-        trail.push([x, z]);
-        if (trail.length > TRAIL) trail.shift();
+      function proj(px, py, pz) {
+        const rx = px * cosAZ - py * sinAZ;
+        const ry = px * sinAZ + py * cosAZ;
+        return [OX + rx * SCALE, OY + (ry * sinEL - pz * cosEL) * SCALE];
       }
 
-      function draw() {
-        ctx.fillStyle = 'rgba(13,15,18,0.18)';
-        ctx.fillRect(0, 0, W, H);
+      // Bounding box
+      const XL = -25, XH = 25, YL = -30, YH = 30, ZL = 0, ZH = 50, GS = 10;
 
-        for (let i = 1; i < trail.length; i++) {
-          const alpha = i / trail.length;
-          const [ax, az] = trail[i - 1];
-          const [bx, bz] = trail[i];
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(78,163,216,${alpha * 0.95})`;
-          ctx.lineWidth = 1.4;
-          ctx.shadowColor = 'rgba(78,163,216,0.4)';
-          ctx.shadowBlur = alpha * 6;
-          ctx.moveTo(cx + ax * SCALE, cy - az * SCALE);
-          ctx.lineTo(cx + bx * SCALE, cy - bz * SCALE);
-          ctx.stroke();
-        }
-
-        // Coordinate axes indicator (bottom-left corner)
+      function drawGrid() {
+        ctx.strokeStyle = 'rgba(150,175,210,0.18)';
+        ctx.lineWidth = 0.7;
         ctx.shadowBlur = 0;
-        const ox = 36, oy = H - 28, len = 58;
-        const ac = 'rgba(200,210,220,0.85)';
-        ctx.strokeStyle = ac;
-        ctx.fillStyle = ac;
-        ctx.lineWidth = 1.8;
-
-        // X axis arrow
-        ctx.beginPath();
-        ctx.moveTo(ox, oy);
-        ctx.lineTo(ox + len, oy);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(ox + len, oy);
-        ctx.lineTo(ox + len - 9, oy - 5);
-        ctx.lineTo(ox + len - 9, oy + 5);
-        ctx.closePath();
-        ctx.fill();
-
-        // Z axis arrow
-        ctx.beginPath();
-        ctx.moveTo(ox, oy);
-        ctx.lineTo(ox, oy - len);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(ox, oy - len);
-        ctx.lineTo(ox - 5, oy - len + 9);
-        ctx.lineTo(ox + 5, oy - len + 9);
-        ctx.closePath();
-        ctx.fill();
-
-        // Labels
-        ctx.font = 'italic bold 16px serif';
-        ctx.fillText('x', ox + len + 6, oy + 5);
-        ctx.fillText('z', ox - 6, oy - len - 6);
+        // Floor z=ZL
+        for (let v = XL; v <= XH + .1; v += GS) { line(proj(v,YL,ZL), proj(v,YH,ZL)); }
+        for (let v = YL; v <= YH + .1; v += GS) { line(proj(XL,v,ZL), proj(XH,v,ZL)); }
+        // Left wall x=XL (YZ face)
+        for (let v = YL; v <= YH + .1; v += GS) { line(proj(XL,v,ZL), proj(XL,v,ZH)); }
+        for (let v = ZL; v <= ZH + .1; v += GS) { line(proj(XL,YL,v), proj(XL,YH,v)); }
+        // Right wall y=YL (XZ face)
+        for (let v = XL; v <= XH + .1; v += GS) { line(proj(v,YL,ZL), proj(v,YL,ZH)); }
+        for (let v = ZL; v <= ZH + .1; v += GS) { line(proj(XL,YL,v), proj(XH,YL,v)); }
       }
 
-      function loop() {
-        for (let i = 0; i < 3; i++) step();
-        draw();
-        requestAnimationFrame(loop);
+      function line([x1,y1],[x2,y2]) {
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
       }
-      loop();
+
+      function drawBox() {
+        ctx.strokeStyle = 'rgba(160,190,220,0.28)';
+        ctx.lineWidth = 0.7;
+        const C = [[XL,YL,ZL],[XH,YL,ZL],[XH,YH,ZL],[XL,YH,ZL],
+                   [XL,YL,ZH],[XH,YL,ZH],[XH,YH,ZH],[XL,YH,ZH]];
+        [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]]
+          .forEach(([a,b]) => line(proj(...C[a]), proj(...C[b])));
+      }
+
+      function drawAxes() {
+        ctx.fillStyle = 'rgba(210,225,240,0.9)';
+        ctx.font = 'bold 12px sans-serif';
+        const [xlx,xly] = proj(XH+4, YL, ZL);
+        const [ylx,yly] = proj(XL, YH+5, ZL);
+        const [zlx,zly] = proj(XL, YL, ZH+5);
+        ctx.fillText('x', xlx, xly+4);
+        ctx.fillText('y', ylx-10, yly+4);
+        ctx.fillText('z', zlx-14, zly);
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = 'rgba(155,175,205,0.75)';
+        for (let v = XL; v <= XH; v += GS) { const [px,py]=proj(v,YL,ZL); ctx.fillText(v,px-7,py+12); }
+        for (let v = YL; v <= YH; v += GS) { const [px,py]=proj(XL,v,ZL); ctx.fillText(v,px+4,py+8);  }
+        for (let v = ZL; v <= ZH; v += GS) { const [px,py]=proj(XL,YL,v); ctx.fillText(v,px-22,py+4); }
+      }
+
+      // Trail
+      const trail = [], MAX_TRAIL = 4000;
+      function stepLorenz() {
+        const ddx = sigma*(ly-lx), ddy = lx*(rho-lz)-ly, ddz = lx*ly-beta*lz;
+        lx += ddx*dt; ly += ddy*dt; lz += ddz*dt;
+        trail.push([lx,ly,lz]);
+        if (trail.length > MAX_TRAIL) trail.shift();
+      }
+
+      function drawTrail() {
+        ctx.lineWidth = 1.1;
+        for (let i = 1; i < trail.length; i++) {
+          const t = i / trail.length;
+          const [x1,y1] = proj(...trail[i-1]);
+          const [x2,y2] = proj(...trail[i]);
+          const hue = 270 - t * 220;
+          ctx.beginPath();
+          ctx.strokeStyle = `hsla(${hue},100%,58%,${0.3+t*0.7})`;
+          ctx.shadowColor = `hsl(${hue},100%,65%)`;
+          ctx.shadowBlur = t * 4;
+          ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+      }
+
+      for (let i = 0; i < 600; i++) stepLorenz();
+
+      function animate() {
+        for (let i = 0; i < 4; i++) stepLorenz();
+        ctx.fillStyle = '#0d0f12';
+        ctx.fillRect(0, 0, W, H);
+        drawGrid();
+        drawBox();
+        drawAxes();
+        drawTrail();
+        requestAnimationFrame(animate);
+      }
+      animate();
     })();
 
     const tabs = document.querySelectorAll('section[data-tab]');
