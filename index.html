@@ -268,75 +268,57 @@
       margin-top: 4px;
     }
 
-    /* ── Teaching rows ── */
+    /* ── Teaching plain ── */
     .teaching-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
     }
 
     .teaching-row {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
-      border-radius: 10px;
-      padding: 20px 24px;
-      transition: border-color 0.2s, background 0.2s;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--line);
     }
 
-    .teaching-row:hover {
-      background: var(--panel-soft);
-      border-color: var(--accent);
-      border-left-color: var(--accent);
+    .teaching-row:first-child {
+      border-top: 1px solid var(--line);
     }
 
     .tr-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .tr-role {
-      font-size: 1.2rem;
+      font-size: 1.7rem;
       font-weight: 700;
       color: var(--text);
     }
 
     .tr-badge {
-      font-size: 0.9rem;
+      font-size: 1.2rem;
       color: var(--accent);
-      background: rgba(78, 163, 216, 0.1);
-      border: 1px solid rgba(78, 163, 216, 0.3);
-      border-radius: 20px;
-      padding: 3px 12px;
       white-space: nowrap;
     }
 
     .tr-institution {
-      font-size: 1.05rem;
+      font-size: 1.35rem;
       color: var(--muted);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .tr-courses {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--line);
+      font-size: 1.2rem;
+      color: var(--muted);
+      line-height: 1.8;
     }
 
-    .tr-chip {
-      font-size: 0.88rem;
-      background: var(--panel-soft);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 4px 12px;
-      color: var(--muted);
+    .tr-courses span {
+      color: var(--text);
+      opacity: 0.75;
     }
 
     /* ── Talks list ── */
@@ -522,9 +504,7 @@
             <span class="tr-badge">Mar. 2026 – Aug. 2026</span>
           </div>
           <div class="tr-institution">Institut für Mathematik, Universität Klagenfurt</div>
-          <div class="tr-courses">
-            <span class="tr-chip">Partial Differential Equations, Exercises</span>
-          </div>
+          <div class="tr-courses"><span>Partial Differential Equations, Exercises</span></div>
         </div>
 
         <div class="teaching-row">
@@ -533,9 +513,7 @@
             <span class="tr-badge">Jan. 2025 – Aug. 2025</span>
           </div>
           <div class="tr-institution">Faculty of Architecture and Urbanism, Universidad de Chile</div>
-          <div class="tr-courses">
-            <span class="tr-chip">Mathematics and Applications to Design</span>
-          </div>
+          <div class="tr-courses"><span>Mathematics and Applications to Design</span></div>
         </div>
 
         <div class="teaching-row">
@@ -544,9 +522,7 @@
             <span class="tr-badge">Nov. 2024 – Jan. 2025</span>
           </div>
           <div class="tr-institution">Department of Industrial Engineering, Universidad Andrés Bello</div>
-          <div class="tr-courses">
-            <span class="tr-chip">Stochastic Analysis of Industrial Systems</span>
-          </div>
+          <div class="tr-courses"><span>Stochastic Analysis of Industrial Systems</span></div>
         </div>
 
         <div class="teaching-row">
@@ -556,19 +532,7 @@
           </div>
           <div class="tr-institution">Department of Mathematics, Universidad Técnica Federico Santa María</div>
           <div class="tr-courses">
-            <span class="tr-chip">Integro-Differential Calculus</span>
-            <span class="tr-chip">Multivariable Calculus</span>
-            <span class="tr-chip">Complex Analysis</span>
-            <span class="tr-chip">Integro-Differential Electromagnetism</span>
-            <span class="tr-chip">Intro to Quantum Physics and Waves</span>
-            <span class="tr-chip">Measure Theory</span>
-            <span class="tr-chip">Functional Analysis</span>
-            <span class="tr-chip">Partial Differential Equations</span>
-            <span class="tr-chip">Numerical Analysis I &amp; II</span>
-            <span class="tr-chip">Numerical Analysis in PDEs</span>
-            <span class="tr-chip">Dynamical Systems</span>
-            <span class="tr-chip">Bifurcation Theory</span>
-            <span class="tr-chip">Differentiable Manifolds</span>
+            <span>Integro-Differential Calculus · Multivariable Calculus · Complex Analysis · Integro-Differential Electromagnetism · Intro to Quantum Physics and Waves · Measure Theory · Functional Analysis · Partial Differential Equations · Numerical Analysis I &amp; II · Numerical Analysis in PDEs · Dynamical Systems · Bifurcation Theory · Differentiable Manifolds</span>
           </div>
         </div>
 
