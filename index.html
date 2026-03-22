@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pablo Muñoz Suárez</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.getElementById('lorenz-eq'), {delimiters: [{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]})"></script>
   <style>
     :root {
       --bg: #0d0f12;
@@ -374,6 +378,35 @@
       }
     }
 
+    /* ── Lorenz block ── */
+    .lorenz-block {
+      margin-top: 22px;
+      margin-left: auto;
+      width: 100%;
+    }
+
+    .lorenz-title {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+    }
+
+    .lorenz-title:hover {
+      text-decoration: underline;
+    }
+
+    .lorenz-eq {
+      margin-top: 12px;
+      font-size: 0.97rem;
+      color: var(--muted);
+      line-height: 2;
+      text-align: center;
+    }
+
     footer {
       border-top: 1px solid var(--line);
       padding: 28px 0 42px;
@@ -478,7 +511,14 @@
           9020 Klagenfurt am Wörthersee, Austria<br /><br />
         </div>
 
-        <canvas id="lorenz" width="380" height="280" style="display:block; margin-top:22px; margin-left:auto; max-width:100%; width:100%; border-radius:8px; opacity:0.85;"></canvas>
+        <div class="lorenz-block">
+          <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Lorenz_system" target="_blank" rel="noopener noreferrer">Lorenz Attractor</a>
+          <canvas id="lorenz" width="380" height="280" style="display:block; width:100%; border-radius:8px; opacity:0.85;"></canvas>
+          <div class="lorenz-eq" id="lorenz-eq">
+            \[\begin{cases} \dot{x} = \sigma(y - x) \\ \dot{y} = x(\rho - z) - y \\ \dot{z} = xy - \beta z \end{cases}\]
+            \(\sigma = 10,\quad \rho = 28,\quad \beta = \tfrac{8}{3}\)
+          </div>
+        </div>
       </aside>
     </section>
 
