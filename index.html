@@ -723,18 +723,18 @@
       const sigma = 10, rho = 28, beta = 8 / 3, dt = 0.005;
       let lx = 0.1, ly = 0, lz = 0;
       for (let i = 0; i < 1000; i++) {
-        const ddx = sigma * (ly - lx), ddy = lx * (rho - lz) - ly, ddz = lx * ly - beta * lz;
-        lx += ddx * dt; ly += ddy * dt; lz += ddz * dt;
+        const ddx = sigma*(ly-lx), ddy = lx*(rho-lz)-ly, ddz = lx*ly-beta*lz;
+        lx += ddx*dt; ly += ddy*dt; lz += ddz*dt;
       }
 
-      // 3D → 2D projection (rotating azimuth, elevation=12°)
-      let AZ = 120 * Math.PI / 180; // ángulo inicial
+      // 3D → 2D projection — cos/sin cached per frame
+      let AZ = 120 * Math.PI / 180;
       const EL = 12 * Math.PI / 180;
       const cosEL = Math.cos(EL), sinEL = Math.sin(EL);
       const SCALE = 3.6, OX = W / 2, OY = 255;
+      let cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
 
       function proj(px, py, pz) {
-        const cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
         const rx = px * cosAZ - py * sinAZ;
         const ry = px * sinAZ + py * cosAZ;
         return [OX + rx * SCALE, OY + (ry * sinEL - pz * cosEL) * SCALE];
@@ -743,23 +743,19 @@
       // Bounding box
       const XL = -25, XH = 25, YL = -30, YH = 30, ZL = 0, ZH = 50, GS = 10;
 
+      function line([x1,y1],[x2,y2]) {
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      }
+
       function drawGrid() {
         ctx.strokeStyle = 'rgba(150,175,210,0.18)';
         ctx.lineWidth = 0.7;
-        ctx.shadowBlur = 0;
-        // Floor z=ZL
-        for (let v = XL; v <= XH + .1; v += GS) { line(proj(v,YL,ZL), proj(v,YH,ZL)); }
-        for (let v = YL; v <= YH + .1; v += GS) { line(proj(XL,v,ZL), proj(XH,v,ZL)); }
-        // Left wall x=XL (YZ face)
-        for (let v = YL; v <= YH + .1; v += GS) { line(proj(XL,v,ZL), proj(XL,v,ZH)); }
-        for (let v = ZL; v <= ZH + .1; v += GS) { line(proj(XL,YL,v), proj(XL,YH,v)); }
-        // Right wall y=YL (XZ face)
-        for (let v = XL; v <= XH + .1; v += GS) { line(proj(v,YL,ZL), proj(v,YL,ZH)); }
-        for (let v = ZL; v <= ZH + .1; v += GS) { line(proj(XL,YL,v), proj(XH,YL,v)); }
-      }
-
-      function line([x1,y1],[x2,y2]) {
-        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+        for (let v = XL; v <= XH+.1; v += GS) { line(proj(v,YL,ZL), proj(v,YH,ZL)); }
+        for (let v = YL; v <= YH+.1; v += GS) { line(proj(XL,v,ZL), proj(XH,v,ZL)); }
+        for (let v = YL; v <= YH+.1; v += GS) { line(proj(XL,v,ZL), proj(XL,v,ZH)); }
+        for (let v = ZL; v <= ZH+.1; v += GS) { line(proj(XL,YL,v), proj(XL,YH,v)); }
+        for (let v = XL; v <= XH+.1; v += GS) { line(proj(v,YL,ZL), proj(v,YL,ZH)); }
+        for (let v = ZL; v <= ZH+.1; v += GS) { line(proj(XL,YL,v), proj(XH,YL,v)); }
       }
 
       function drawBox() {
@@ -774,21 +770,16 @@
       function drawAxes() {
         ctx.fillStyle = 'rgba(210,225,240,0.9)';
         ctx.font = 'bold 12px sans-serif';
-        const [xlx,xly] = proj(XH+4, YL, ZL);
-        const [ylx,yly] = proj(XL, YH+5, ZL);
-        const [zlx,zly] = proj(XL, YL, ZH+5);
-        ctx.fillText('x', xlx, xly+4);
-        ctx.fillText('y', ylx-10, yly+4);
-        ctx.fillText('z', zlx-14, zly);
-        ctx.font = '9px sans-serif';
-        ctx.fillStyle = 'rgba(155,175,205,0.75)';
-        for (let v = XL; v <= XH; v += GS) { const [px,py]=proj(v,YL,ZL); ctx.fillText(v,px-7,py+12); }
-        for (let v = YL; v <= YH; v += GS) { const [px,py]=proj(XL,v,ZL); ctx.fillText(v,px+4,py+8);  }
-        for (let v = ZL; v <= ZH; v += GS) { const [px,py]=proj(XL,YL,v); ctx.fillText(v,px-22,py+4); }
+        const [xlx,xly] = proj(XH+4,YL,ZL), [ylx,yly] = proj(XL,YH+5,ZL), [zlx,zly] = proj(XL,YL,ZH+5);
+        ctx.fillText('x',xlx,xly+4); ctx.fillText('y',ylx-10,yly+4); ctx.fillText('z',zlx-14,zly);
+        ctx.font = '9px sans-serif'; ctx.fillStyle = 'rgba(155,175,205,0.75)';
+        for (let v=XL; v<=XH; v+=GS) { const [px,py]=proj(v,YL,ZL); ctx.fillText(v,px-7,py+12); }
+        for (let v=YL; v<=YH; v+=GS) { const [px,py]=proj(XL,v,ZL); ctx.fillText(v,px+4,py+8);  }
+        for (let v=ZL; v<=ZH; v+=GS) { const [px,py]=proj(XL,YL,v); ctx.fillText(v,px-22,py+4); }
       }
 
-      // Trail
-      const trail = [], MAX_TRAIL = 4000;
+      // Trail — agrupada en buckets de color (20 stroke calls en vez de 4000)
+      const trail = [], MAX_TRAIL = 2500;
       function stepLorenz() {
         const ddx = sigma*(ly-lx), ddy = lx*(rho-lz)-ly, ddz = lx*ly-beta*lz;
         lx += ddx*dt; ly += ddy*dt; lz += ddz*dt;
@@ -796,26 +787,38 @@
         if (trail.length > MAX_TRAIL) trail.shift();
       }
 
+      const BUCKETS = 20;
       function drawTrail() {
+        const N = trail.length;
+        if (N < 2) return;
         ctx.lineWidth = 1.1;
-        for (let i = 1; i < trail.length; i++) {
-          const t = i / trail.length;
-          const [x1,y1] = proj(...trail[i-1]);
-          const [x2,y2] = proj(...trail[i]);
-          const hue = 270 - t * 220;
+        for (let b = 0; b < BUCKETS; b++) {
+          const i0 = Math.floor(b * N / BUCKETS) + 1;
+          const i1 = Math.floor((b + 1) * N / BUCKETS);
+          const t = (b + 0.5) / BUCKETS;
           ctx.beginPath();
-          ctx.strokeStyle = `hsla(${hue},100%,58%,${0.3+t*0.7})`;
-          ctx.shadowColor = `hsl(${hue},100%,65%)`;
-          ctx.shadowBlur = t * 4;
-          ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+          ctx.strokeStyle = `hsla(${(270 - t*220)|0},100%,58%,${(0.3+t*0.7).toFixed(2)})`;
+          for (let i = i0; i <= i1; i++) {
+            const [x1,y1] = proj(...trail[i-1]);
+            const [x2,y2] = proj(...trail[i]);
+            ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+          }
+          ctx.stroke();
         }
-        ctx.shadowBlur = 0;
       }
 
       for (let i = 0; i < 600; i++) stepLorenz();
 
-      function animate() {
-        AZ += 0.005; // rotación lenta continua
+      // Limitar a ~30fps y pausar cuando la sección no está visible
+      let lastT = 0;
+      const section = canvas.closest('section[data-tab]');
+      function animate(ts) {
+        requestAnimationFrame(animate);
+        if (ts - lastT < 33) return;
+        if (section && !section.classList.contains('tab-active')) return;
+        lastT = ts;
+        AZ += 0.002;
+        cosAZ = Math.cos(AZ); sinAZ = Math.sin(AZ);
         for (let i = 0; i < 10; i++) stepLorenz();
         ctx.fillStyle = '#0d0f12';
         ctx.fillRect(0, 0, W, H);
@@ -823,9 +826,8 @@
         drawBox();
         drawAxes();
         drawTrail();
-        requestAnimationFrame(animate);
       }
-      animate();
+      requestAnimationFrame(animate);
     })();
 
     const tabs = document.querySelectorAll('section[data-tab]');
