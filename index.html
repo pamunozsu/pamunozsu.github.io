@@ -727,7 +727,7 @@
       }
 
       // 3D → 2D projection (rotating azimuth, elevation=12°)
-      let AZ = 20 * Math.PI / 180;
+      let AZ = 20 * Math.PI / 180; // ángulo inicial
       const EL = 12 * Math.PI / 180;
       const cosEL = Math.cos(EL), sinEL = Math.sin(EL);
       const SCALE = 3.6, OX = W / 2, OY = 255;
@@ -814,7 +814,7 @@
       for (let i = 0; i < 600; i++) stepLorenz();
 
       function animate() {
-        AZ += 0.003; // rotación lenta continua
+        AZ += 0.005; // rotación lenta continua
         for (let i = 0; i < 10; i++) stepLorenz();
         ctx.fillStyle = '#0d0f12';
         ctx.fillRect(0, 0, W, H);
