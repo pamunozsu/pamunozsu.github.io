@@ -40,9 +40,9 @@
     }
 
     .container {
-      max-width: 1160px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 0 28px;
+      padding: 0 48px;
     }
 
     .topbar {
@@ -478,7 +478,7 @@
           9020 Klagenfurt am Wörthersee, Austria<br /><br />
         </div>
 
-        <canvas id="lorenz" width="300" height="220" style="display:block; margin-top:22px; margin-left:auto; max-width:320px; width:100%; border-radius:8px; opacity:0.85;"></canvas>
+        <canvas id="lorenz" width="380" height="280" style="display:block; margin-top:22px; margin-left:auto; max-width:100%; width:100%; border-radius:8px; opacity:0.85;"></canvas>
       </aside>
     </section>
 
@@ -723,11 +723,11 @@
 
         // Coordinate axes indicator (bottom-left corner)
         ctx.shadowBlur = 0;
-        const ox = 28, oy = H - 22, len = 36;
-        const ac = 'rgba(200,210,220,0.7)';
+        const ox = 36, oy = H - 28, len = 58;
+        const ac = 'rgba(200,210,220,0.85)';
         ctx.strokeStyle = ac;
         ctx.fillStyle = ac;
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 1.8;
 
         // X axis arrow
         ctx.beginPath();
@@ -736,8 +736,8 @@
         ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(ox + len, oy);
-        ctx.lineTo(ox + len - 6, oy - 3);
-        ctx.lineTo(ox + len - 6, oy + 3);
+        ctx.lineTo(ox + len - 9, oy - 5);
+        ctx.lineTo(ox + len - 9, oy + 5);
         ctx.closePath();
         ctx.fill();
 
@@ -748,15 +748,15 @@
         ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(ox, oy - len);
-        ctx.lineTo(ox - 3, oy - len + 6);
-        ctx.lineTo(ox + 3, oy - len + 6);
+        ctx.lineTo(ox - 5, oy - len + 9);
+        ctx.lineTo(ox + 5, oy - len + 9);
         ctx.closePath();
         ctx.fill();
 
         // Labels
-        ctx.font = 'italic 13px serif';
-        ctx.fillText('x', ox + len + 4, oy + 4);
-        ctx.fillText('z', ox - 4, oy - len - 4);
+        ctx.font = 'italic bold 16px serif';
+        ctx.fillText('x', ox + len + 6, oy + 5);
+        ctx.fillText('z', ox - 6, oy - len - 6);
       }
 
       function loop() {
