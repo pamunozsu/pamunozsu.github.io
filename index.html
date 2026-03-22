@@ -726,8 +726,8 @@
         lx += ddx * dt; ly += ddy * dt; lz += ddz * dt;
       }
 
-      // 3D → 2D projection (azimuth=5°, elevation=12°) — butterfly view
-      const AZ = 5 * Math.PI / 180, EL = 12 * Math.PI / 180;
+      // 3D → 2D projection (azimuth=20°, elevation=12°) — butterfly view
+      const AZ = 20 * Math.PI / 180, EL = 12 * Math.PI / 180;
       const cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
       const cosEL = Math.cos(EL), sinEL = Math.sin(EL);
       const SCALE = 3.6, OX = W / 2, OY = 255;
