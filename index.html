@@ -268,57 +268,75 @@
       margin-top: 4px;
     }
 
-    /* ── Teaching cards ── */
-    .teaching-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
-
-    .teaching-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 20px 22px;
+    /* ── Teaching rows ── */
+    .teaching-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      transition: border-color 0.2s;
+      gap: 16px;
     }
 
-    .teaching-card:hover {
+    .teaching-row {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 20px 24px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .teaching-row:hover {
+      background: var(--panel-soft);
       border-color: var(--accent);
+      border-left-color: var(--accent);
     }
 
-    .tc-role {
-      font-size: 1.05rem;
-      font-weight: 600;
+    .tr-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .tr-role {
+      font-size: 1.2rem;
+      font-weight: 700;
       color: var(--text);
     }
 
-    .tc-institution {
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-
-    .tc-date {
-      font-size: 0.88rem;
+    .tr-badge {
+      font-size: 0.9rem;
       color: var(--accent);
-      font-style: italic;
+      background: rgba(78, 163, 216, 0.1);
+      border: 1px solid rgba(78, 163, 216, 0.3);
+      border-radius: 20px;
+      padding: 3px 12px;
+      white-space: nowrap;
     }
 
-    .tc-courses {
-      margin-top: 8px;
-      font-size: 0.93rem;
+    .tr-institution {
+      font-size: 1.05rem;
       color: var(--muted);
-      line-height: 1.6;
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
+      margin-bottom: 12px;
     }
 
-    .tc-courses strong {
-      color: var(--text);
-      font-weight: 500;
+    .tr-courses {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .tr-chip {
+      font-size: 0.88rem;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 4px 12px;
+      color: var(--muted);
     }
 
     /* ── Talks list ── */
@@ -496,34 +514,62 @@
 
     <section id="teaching" class="content-section" data-tab>
       <h2>Teaching &amp; Mentoring</h2>
-      <div class="teaching-grid">
+      <div class="teaching-list">
 
-        <div class="teaching-card">
-          <div class="tc-role">Associate Lecturer</div>
-          <div class="tc-institution">Institut für Mathematik, Universität Klagenfurt</div>
-          <div class="tc-date">Mar. 2026 – Aug. 2026</div>
-          <div class="tc-courses"><strong>Course:</strong> Partial Differential Equations, Exercises</div>
+        <div class="teaching-row">
+          <div class="tr-header">
+            <span class="tr-role">Associate Lecturer</span>
+            <span class="tr-badge">Mar. 2026 – Aug. 2026</span>
+          </div>
+          <div class="tr-institution">Institut für Mathematik, Universität Klagenfurt</div>
+          <div class="tr-courses">
+            <span class="tr-chip">Partial Differential Equations, Exercises</span>
+          </div>
         </div>
 
-        <div class="teaching-card">
-          <div class="tc-role">Associate Lecturer</div>
-          <div class="tc-institution">Faculty of Architecture and Urbanism, Universidad de Chile</div>
-          <div class="tc-date">Jan. 2025 – Aug. 2025</div>
-          <div class="tc-courses"><strong>Course:</strong> Mathematics and Applications to Design</div>
+        <div class="teaching-row">
+          <div class="tr-header">
+            <span class="tr-role">Associate Lecturer</span>
+            <span class="tr-badge">Jan. 2025 – Aug. 2025</span>
+          </div>
+          <div class="tr-institution">Faculty of Architecture and Urbanism, Universidad de Chile</div>
+          <div class="tr-courses">
+            <span class="tr-chip">Mathematics and Applications to Design</span>
+          </div>
         </div>
 
-        <div class="teaching-card">
-          <div class="tc-role">Part-Time Lecturer</div>
-          <div class="tc-institution">Department of Industrial Engineering, Universidad Andrés Bello</div>
-          <div class="tc-date">Nov. 2024 – Jan. 2025</div>
-          <div class="tc-courses"><strong>Course:</strong> Stochastic Analysis of Industrial Systems</div>
+        <div class="teaching-row">
+          <div class="tr-header">
+            <span class="tr-role">Part-Time Lecturer</span>
+            <span class="tr-badge">Nov. 2024 – Jan. 2025</span>
+          </div>
+          <div class="tr-institution">Department of Industrial Engineering, Universidad Andrés Bello</div>
+          <div class="tr-courses">
+            <span class="tr-chip">Stochastic Analysis of Industrial Systems</span>
+          </div>
         </div>
 
-        <div class="teaching-card">
-          <div class="tc-role">Teaching Assistant</div>
-          <div class="tc-institution">Department of Mathematics, Universidad Técnica Federico Santa María</div>
-          <div class="tc-date">Mar. 2017 – Jul. 2024</div>
-          <div class="tc-courses"><strong>Courses:</strong> Integro-Differential Calculus · Multivariable Calculus · Complex Analysis · Integro-Differential Electromagnetism · Introduction to Quantum Physics and Waves · Measure Theory · Functional Analysis · Partial Differential Equations · Numerical Analysis I &amp; II · Numerical Analysis in PDEs · Dynamical Systems · Bifurcation Theory · Differentiable Manifolds</div>
+        <div class="teaching-row">
+          <div class="tr-header">
+            <span class="tr-role">Teaching Assistant</span>
+            <span class="tr-badge">Mar. 2017 – Jul. 2024</span>
+          </div>
+          <div class="tr-institution">Department of Mathematics, Universidad Técnica Federico Santa María</div>
+          <div class="tr-courses">
+            <span class="tr-chip">Integro-Differential Calculus</span>
+            <span class="tr-chip">Multivariable Calculus</span>
+            <span class="tr-chip">Complex Analysis</span>
+            <span class="tr-chip">Integro-Differential Electromagnetism</span>
+            <span class="tr-chip">Intro to Quantum Physics and Waves</span>
+            <span class="tr-chip">Measure Theory</span>
+            <span class="tr-chip">Functional Analysis</span>
+            <span class="tr-chip">Partial Differential Equations</span>
+            <span class="tr-chip">Numerical Analysis I &amp; II</span>
+            <span class="tr-chip">Numerical Analysis in PDEs</span>
+            <span class="tr-chip">Dynamical Systems</span>
+            <span class="tr-chip">Bifurcation Theory</span>
+            <span class="tr-chip">Differentiable Manifolds</span>
+          </div>
         </div>
 
       </div>
