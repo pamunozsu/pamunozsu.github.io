@@ -529,6 +529,7 @@
         <a href="#cv" data-target="cv">CV</a>
         <a href="#experience" data-target="experience">Experience</a>
         <a href="#concerts" data-target="concerts">Concerts</a>
+        <a href="#discrete" data-target="discrete">Discrete Maps</a>
       </nav>
     </div>
   </header>
@@ -831,6 +832,16 @@
         This section is available for concerts, music-related activities.
       </div>
     </section>
+
+    <section id="discrete" class="content-section" data-tab>
+      <h2>Discrete Maps</h2>
+      <div class="lorenz-block" style="max-width: 560px; margin: 0 auto;">
+        <a class="lorenz-title" id="discrete-title" href="https://en.wikipedia.org/wiki/Bogdanov_map" target="_blank" rel="noopener noreferrer">Bogdanov Map</a>
+        <div class="attractor-switch" id="discrete-switch"></div>
+        <canvas id="discrete-canvas" width="500" height="400" style="display:block; width:100%; border-radius:8px; opacity:0.9;"></canvas>
+        <div class="lorenz-eq" id="discrete-eq"></div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -1025,6 +1036,113 @@
         drawBox();
         drawAxes();
         drawTrail();
+      }
+      requestAnimationFrame(animate);
+    })();
+
+    // ── Discrete map gallery (particle swarm) ──
+    (function () {
+      const canvas = document.getElementById('discrete-canvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const titleEl = document.getElementById('discrete-title');
+      const eqEl = document.getElementById('discrete-eq');
+      const switchEl = document.getElementById('discrete-switch');
+
+      const MAPS = {
+        bogdanov: {
+          name: 'Bogdanov Map',
+          link: 'https://en.wikipedia.org/wiki/Bogdanov_map',
+          box: { XL: -0.5, XH: 2, YL: -1, YH: 1 },
+          maxAge: 300,
+          step: (x, y) => {
+            const eps = 0, k = 1.2, mu = 0;
+            const yn = y + eps*y + k*x*(x-1) + mu*x*y;
+            const xn = x + yn;
+            return [xn, yn];
+          },
+          eq: `\\[\\begin{cases} y_{n+1} = y_n + \\epsilon y_n + k\\,x_n(x_n-1) + \\mu x_n y_n \\\\ x_{n+1} = x_n + y_{n+1} \\end{cases}\\]
+               \\(\\epsilon = 0,\\ k = 1.2,\\ \\mu = 0\\)`
+        }
+      };
+
+      const N_PARTICLES = 1200, ESCAPE_BOUND = 60, MARGIN = 30;
+      let current, particles = [];
+
+      function spawnParticle() {
+        const { XL, XH, YL, YH } = current.box;
+        return { x: XL + Math.random()*(XH-XL), y: YL + Math.random()*(YH-YL), age: 0 };
+      }
+
+      function proj(x, y) {
+        const { XL, XH, YL, YH } = current.box;
+        const px = MARGIN + (x-XL)/(XH-XL) * (W-2*MARGIN);
+        const py = H - MARGIN - (y-YL)/(YH-YL) * (H-2*MARGIN);
+        return [px, py];
+      }
+
+      function renderEq() {
+        eqEl.innerHTML = current.eq;
+        if (window.renderMathInElement) {
+          renderMathInElement(eqEl, {delimiters: [{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
+        }
+      }
+
+      function loadMap(id) {
+        current = MAPS[id];
+        particles = [];
+        for (let i = 0; i < N_PARTICLES; i++) {
+          const p = spawnParticle();
+          p.age = Math.floor(Math.random() * current.maxAge);
+          particles.push(p);
+        }
+        titleEl.textContent = current.name;
+        titleEl.href = current.link;
+        renderEq();
+        switchEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+      }
+
+      Object.keys(MAPS).forEach(id => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'attractor-btn';
+        btn.dataset.id = id;
+        btn.textContent = MAPS[id].name.replace(' Map', '');
+        btn.addEventListener('click', () => loadMap(id));
+        switchEl.appendChild(btn);
+      });
+
+      loadMap('bogdanov');
+
+      let lastT = 0;
+      const section = canvas.closest('section[data-tab]');
+      function animate(ts) {
+        requestAnimationFrame(animate);
+        if (ts - lastT < 33) return;
+        if (section && !section.classList.contains('tab-active')) return;
+        lastT = ts;
+
+        ctx.fillStyle = '#0d0f12';
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(160,190,220,0.25)';
+        ctx.lineWidth = 0.7;
+        ctx.strokeRect(MARGIN, MARGIN, W-2*MARGIN, H-2*MARGIN);
+
+        for (const p of particles) {
+          const [nx, ny] = current.step(p.x, p.y);
+          p.x = nx; p.y = ny; p.age++;
+          if (!isFinite(p.x) || !isFinite(p.y) || Math.abs(p.x) > ESCAPE_BOUND || Math.abs(p.y) > ESCAPE_BOUND || p.age > current.maxAge) {
+            Object.assign(p, spawnParticle());
+          }
+        }
+
+        for (const p of particles) {
+          const [px, py] = proj(p.x, p.y);
+          if (px < 0 || px > W || py < 0 || py > H) continue;
+          const t = p.age / current.maxAge;
+          ctx.fillStyle = `hsla(${(270 - t*220)|0},100%,58%,${(0.35+t*0.5).toFixed(2)})`;
+          ctx.fillRect(px, py, 1.6, 1.6);
+        }
       }
       requestAnimationFrame(animate);
     })();
