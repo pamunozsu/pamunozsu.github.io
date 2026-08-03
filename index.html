@@ -205,6 +205,52 @@
       font-size: 1.03rem;
     }
 
+    /* ── Publications list ── */
+    .pub-group {
+      margin-bottom: 26px;
+    }
+
+    .pub-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .pub-group h3 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin: 0 0 12px;
+    }
+
+    .pub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pub-item {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .pub-item strong {
+      color: var(--text);
+    }
+
+    .pub-item em {
+      font-style: italic;
+    }
+
+    .pub-item a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .pub-item a:hover {
+      text-decoration: underline;
+    }
+
     .cv-link {
       display: inline-block;
       margin-top: 12px;
@@ -526,9 +572,33 @@
 
     <section id="publications" class="content-section" data-tab>
       <h2>Publications</h2>
-      <div class="card">
-        This section is ready for journal papers, conference articles, preprints, working papers,
-        and thesis-related outputs.
+
+      <div class="pub-group">
+        <h3>Published</h3>
+        <div class="pub-list">
+          <div class="pub-item">
+            G. Campaña, <strong>P. Muñoz</strong>, E. Otárola, <em>Finite element approximation for a convective Brinkman–Forchheimer problem coupled with a heat equation</em>, Journal of Scientific Computing, vol. 104, no. 1, Art. 21, 2025. <a href="https://arxiv.org/abs/2403.09872" target="_blank" rel="noopener noreferrer">arXiv:2403.09872</a>.
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-group">
+        <h3>Submitted</h3>
+        <div class="pub-list">
+          <div class="pub-item">No papers currently under submission.</div>
+        </div>
+      </div>
+
+      <div class="pub-group">
+        <h3>In Preparation</h3>
+        <div class="pub-list">
+          <div class="pub-item">
+            J. Morales, <strong>P. Muñoz</strong>, H. Ulloa, F. Guzmán, <em>Collective Brownian motion driven by spatiotemporal light gradients</em>.
+          </div>
+          <div class="pub-item">
+            P. Moisset, <strong>P. Muñoz</strong>, R. Ramos, <em>Analysis of macro-metacommunities under the interaction of diffusion, environmental adaptation, and risk under different topological geometries</em>.
+          </div>
+        </div>
       </div>
     </section>
 
