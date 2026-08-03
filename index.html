@@ -921,7 +921,7 @@
         lastT = ts;
         AZ += 0.002;
         cosAZ = Math.cos(AZ); sinAZ = Math.sin(AZ);
-        for (let i = 0; i < 4; i++) stepLorenz();
+        for (let i = 0; i < 7; i++) stepLorenz();
         ctx.fillStyle = '#0d0f12';
         ctx.fillRect(0, 0, W, H);
         drawGrid();
