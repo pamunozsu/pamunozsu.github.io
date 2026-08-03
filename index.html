@@ -559,11 +559,11 @@
         </div>
 
         <div class="lorenz-block">
-          <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Lorenz_system" target="_blank" rel="noopener noreferrer">Lorenz Attractor</a>
+          <a class="lorenz-title" href="https://www.algosome.com/articles/aizawa-attractor-chaos.html" target="_blank" rel="noopener noreferrer">Aizawa Attractor</a>
           <canvas id="lorenz" width="380" height="320" style="display:block; width:100%; border-radius:8px; opacity:0.9;"></canvas>
           <div class="lorenz-eq" id="lorenz-eq">
-            \[\begin{cases} \dot{x} = \sigma(y - x) \\ \dot{y} = x(\rho - z) - y \\ \dot{z} = xy - \beta z \end{cases}\]
-            \(\sigma = 10,\quad \rho = 28,\quad \beta = \tfrac{8}{3}\)
+            \[\begin{cases} \dot{x} = (z-b)x - dy \\ \dot{y} = dx + (z-b)y \\ \dot{z} = c + az - \tfrac{z^3}{3} - (x^2+y^2)(1+ez) + fzx^3 \end{cases}\]
+            \(a = 0.95,\ b = 0.7,\ c = 0.6,\ d = 3.5,\ e = 0.25,\ f = 0.1\)
           </div>
         </div>
       </aside>
@@ -811,17 +811,19 @@
     </div>
   </footer>
   <script>
-    // ── Lorenz attractor 3D ──
+    // ── Aizawa attractor 3D ──
     (function () {
       const canvas = document.getElementById('lorenz');
       const ctx = canvas.getContext('2d');
       const W = canvas.width, H = canvas.height;
 
-      // Lorenz parameters
-      const sigma = 10, rho = 28, beta = 8 / 3, dt = 0.005;
+      // Aizawa parameters
+      const pa = 0.95, pb = 0.7, pc = 0.6, pd = 3.5, pe = 0.25, pf = 0.1, dt = 0.01;
       let lx = 0.1, ly = 0, lz = 0;
       for (let i = 0; i < 1000; i++) {
-        const ddx = sigma*(ly-lx), ddy = lx*(rho-lz)-ly, ddz = lx*ly-beta*lz;
+        const ddx = (lz-pb)*lx - pd*ly;
+        const ddy = pd*lx + (lz-pb)*ly;
+        const ddz = pc + pa*lz - lz*lz*lz/3 - (lx*lx+ly*ly)*(1+pe*lz) + pf*lz*lx*lx*lx;
         lx += ddx*dt; ly += ddy*dt; lz += ddz*dt;
       }
 
@@ -829,7 +831,7 @@
       let AZ = 120 * Math.PI / 180;
       const EL = 12 * Math.PI / 180;
       const cosEL = Math.cos(EL), sinEL = Math.sin(EL);
-      const SCALE = 3.6, OX = W / 2, OY = 255;
+      const SCALE = 50, OX = W / 2, OY = 205;
       let cosAZ = Math.cos(AZ), sinAZ = Math.sin(AZ);
 
       function proj(px, py, pz) {
@@ -839,7 +841,7 @@
       }
 
       // Bounding box
-      const XL = -25, XH = 25, YL = -30, YH = 30, ZL = 0, ZH = 50, GS = 10;
+      const XL = -2, XH = 2, YL = -2, YH = 2, ZL = -1, ZH = 2, GS = 1;
 
       function line([x1,y1],[x2,y2]) {
         ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
@@ -879,7 +881,9 @@
       // Trail — agrupada en buckets de color (20 stroke calls en vez de 4000)
       const trail = [], MAX_TRAIL = 2500;
       function stepLorenz() {
-        const ddx = sigma*(ly-lx), ddy = lx*(rho-lz)-ly, ddz = lx*ly-beta*lz;
+        const ddx = (lz-pb)*lx - pd*ly;
+        const ddy = pd*lx + (lz-pb)*ly;
+        const ddz = pc + pa*lz - lz*lz*lz/3 - (lx*lx+ly*ly)*(1+pe*lz) + pf*lz*lx*lx*lx;
         lx += ddx*dt; ly += ddy*dt; lz += ddz*dt;
         trail.push([lx,ly,lz]);
         if (trail.length > MAX_TRAIL) trail.shift();
@@ -917,7 +921,7 @@
         lastT = ts;
         AZ += 0.002;
         cosAZ = Math.cos(AZ); sinAZ = Math.sin(AZ);
-        for (let i = 0; i < 10; i++) stepLorenz();
+        for (let i = 0; i < 4; i++) stepLorenz();
         ctx.fillStyle = '#0d0f12';
         ctx.fillRect(0, 0, W, H);
         drawGrid();
