@@ -1004,6 +1004,19 @@
           eq: `\\[\\begin{cases} \\dot{x} = \\alpha(y - x - h(x)) \\\\ \\dot{y} = x - y + z \\\\ \\dot{z} = -\\beta y \\end{cases}\\]
                \\(h(x) = m_1 x + \\tfrac12(m_0-m_1)(|x+1|-|x-1|)\\)
                \\(\\alpha = 15.6,\\ \\beta = 28,\\ m_0 = -\\tfrac{8}{7},\\ m_1 = -\\tfrac{5}{7}\\)`
+        },
+        dadras: {
+          name: 'Dadras Attractor',
+          link: 'https://www.sciencedirect.com/science/article/abs/pii/S0375960109009591',
+          box: { XL: -22, XH: 24, YL: -14, YH: 12, ZL: -18, ZH: 16, GS: 6 },
+          scale: 4.7, oy: 155, dt: 0.005, stepsPerFrame: 10,
+          init: () => [1, 1, 0],
+          deriv: (x, y, z) => {
+            const p = 3, o = 2.7, r = 1.7, c = 2, e = 9;
+            return [y - p*x + o*y*z, r*y - x*z + z, c*x*y - e*z];
+          },
+          eq: `\\[\\begin{cases} \\dot{x} = y - px + oyz \\\\ \\dot{y} = ry - xz + z \\\\ \\dot{z} = cxy - ez \\end{cases}\\]
+               \\(p = 3,\\ o = 2.7,\\ r = 1.7,\\ c = 2,\\ e = 9\\)`
         }
       };
 
