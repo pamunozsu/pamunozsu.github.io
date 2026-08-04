@@ -102,6 +102,18 @@
       line-height: 1.6;
     }
 
+    .research-list {
+      margin: 0 0 22px;
+      padding-left: 22px;
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: var(--text);
+    }
+
+    .research-list li::marker {
+      color: var(--accent);
+    }
+
     h1 {
       margin: 0 0 28px;
       font-size: 3rem;
@@ -686,17 +698,27 @@
     <section id="research" class="content-section" data-tab>
       <h2>Research</h2>
       <div class="research-grid">
-        <p class="lead">
-          My current work, part of the <a href="https://imsc.uni-graz.at/mr-dynamo/projects/idcontrol" target="_blank" rel="noopener noreferrer">IdCONTROL</a> project within the <a href="https://imsc.uni-graz.at/mr-dynamo/" target="_blank" rel="noopener noreferrer">MR-DYNAMO</a> initiative, focuses on parameter identification for the Bloch-Torrey equation, the PDE describing spin magnetization in diffusion MRI.
-        </p>
+        <div>
+          <p class="lead">
+            My current work, part of the <a href="https://imsc.uni-graz.at/mr-dynamo/projects/idcontrol" target="_blank" rel="noopener noreferrer">IdCONTROL</a> project within the <a href="https://imsc.uni-graz.at/mr-dynamo/" target="_blank" rel="noopener noreferrer">MR-DYNAMO</a> initiative, focuses on parameter identification for the Bloch-Torrey equation, the PDE describing spin magnetization in diffusion MRI.
+          </p>
+          <p class="lead" style="margin-bottom: 6px;">Other interests are:</p>
+          <ul class="research-list">
+            <li>Bifurcation Theory in PDE</li>
+            <li>Finite Element Methods</li>
+            <li>Fluid Dynamics</li>
+            <li>Inverse Problems in PDEs</li>
+            <li>Mathematical Ecology</li>
+            <li>Mathematical Neuroscience</li>
+            <li>(Non)/Linear Parabolic Problems</li>
+            <li>Numerical Methods for PDEs</li>
+            <li>Reconstruction of Parameter in PDEs</li>
+          </ul>
+        </div>
         <div class="research-figure-placeholder">
           Result figures from ongoing simulations will go here.
         </div>
       </div>
-
-      <p class="lead" style="margin-top: 22px;">
-        Other interests are: Bifurcation Theory in PDE, Finite Element Methods, Fluid Dynamics, Inverse Problems in PDEs, Mathematical Ecology, Mathematical Neuroscience, (Non)/Linear Parabolic Problems, Numerical Methods for PDEs, Reconstruction of Parameter in PDEs.
-      </p>
 
       <div class="research-grid" style="margin-top: 22px;">
         <p class="lead">
