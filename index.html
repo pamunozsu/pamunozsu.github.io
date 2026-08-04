@@ -853,12 +853,14 @@
 
       <div class="rd-grid">
         <div>
-          <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations" target="_blank" rel="noopener noreferrer">Navier–Stokes (Smoke Plume)</a>
+          <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations" target="_blank" rel="noopener noreferrer">Navier–Stokes</a>
+          <div class="attractor-switch" id="ns-switch"></div>
           <canvas id="ns-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
         </div>
         <div class="lorenz-eq" id="ns-eq">
           \[\begin{cases} \dfrac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u} = -\nabla p + \nu\,\Delta\mathbf{u} + \mathbf{f} \\[6pt] \nabla\cdot\mathbf{u} = 0 \\[6pt] \dfrac{\partial s}{\partial t} + \mathbf{u}\cdot\nabla s = \kappa\,\Delta s \end{cases}\]
-          \(\nu = 1\times10^{-4},\quad \kappa = 5\times10^{-5}\)
+          \(\kappa = 5\times10^{-5}\)
+          <div id="ns-caption" style="margin-top: 10px; font-size: 0.85rem; line-height: 1.6; color: var(--muted); text-align: left;"></div>
         </div>
       </div>
     </section>
@@ -1353,7 +1355,7 @@
       requestAnimationFrame(animate);
     })();
 
-    // ── Navier–Stokes (Stable Fluids smoke plume) ──
+    // ── Navier–Stokes (Stable Fluids) ──
     (function () {
       const canvas = document.getElementById('ns-canvas');
       if (!canvas) return;
@@ -1361,9 +1363,54 @@
       const GW = canvas.width, GH = canvas.height;
       const W = GW + 2, H = GH + 2, SIZE = W * H;
       const N = Math.max(GW, GH);
-      const visc = 0.0001, diffR = 0.00005, dt = 1, ITER = 16;
+      const dt = 1, ITER = 16, diffR = 0.00005;
+      const captionEl = document.getElementById('ns-caption');
+      const switchEl = document.getElementById('ns-switch');
+
+      const OB_CX = Math.floor(GW*0.28), OB_CY = Math.floor(GH*0.5), OB_R = 10;
+      const obstacleMask = new Uint8Array(SIZE);
 
       function IDX(x, y) { return x + W*y; }
+
+      for (let j = 1; j <= GH; j++) {
+        for (let i = 1; i <= GW; i++) {
+          if ((i-OB_CX)*(i-OB_CX) + (j-OB_CY)*(j-OB_CY) <= OB_R*OB_R) obstacleMask[IDX(i,j)] = 1;
+        }
+      }
+
+      const SCENARIOS = {
+        plume: {
+          name: 'Plume', visc: 0.0001, colorScale: 0.35, obstacle: false,
+          caption: 'Buoyant plume: two swirling injectors at the bottom push smoke upward, no obstacle in the flow.',
+          addForces(t, addSource) {
+            const ex = Math.floor(GW*0.5 + Math.sin(t)*GW*0.2);
+            addSource(ex, GH-4, Math.sin(t*1.3)*2, -3, 6);
+            addSource(Math.floor(GW*0.3), GH-4, 1.5, -3, 5);
+            addSource(Math.floor(GW*0.7), GH-4, -1.5, -3, 5);
+          }
+        },
+        laminar: {
+          name: 'Laminar', visc: 0.00004, colorScale: 0.045, obstacle: true,
+          caption: 'Low Reynolds number (ν=4×10⁻⁵): smooth, steady inflow gliding around a fixed cylinder — no shedding.',
+          addForces(t, addSource, vx) {
+            for (let j = 1; j <= GH; j++) {
+              vx[IDX(1,j)] += 1.8; vx[IDX(2,j)] += 1.26; vx[IDX(3,j)] += 0.72;
+            }
+          }
+        },
+        turbulent: {
+          name: 'Turbulent', visc: 0.00002, colorScale: 0.045, obstacle: true,
+          caption: 'High Reynolds number (ν=2×10⁻⁵): faster inflow past the cylinder sheds a chaotic wake — a von Kármán-like vortex street.',
+          addForces(t, addSource, vx, vy) {
+            for (let j = 1; j <= GH; j++) {
+              vx[IDX(1,j)] += 2.5; vx[IDX(2,j)] += 1.75; vx[IDX(3,j)] += 1.0;
+            }
+            const py = OB_CY - OB_R - 3;
+            if (py >= 1) vy[IDX(OB_CX,py)] += 0.6*Math.sin(t*3);
+          }
+        }
+      };
+      let current;
 
       let vx = new Float32Array(SIZE), vy = new Float32Array(SIZE);
       let vx0 = new Float32Array(SIZE), vy0 = new Float32Array(SIZE);
@@ -1438,13 +1485,24 @@
         vx[i] += fx; vy[i] += fy; dens[i] += d;
       }
 
+      function applyObstacle() {
+        if (!current.obstacle) return;
+        for (let i = 0; i < SIZE; i++) {
+          if (obstacleMask[i]) { vx[i] = 0; vy[i] = 0; }
+        }
+      }
+
       function step() {
+        const visc = current.visc;
+        applyObstacle();
         [vx0,vx] = [vx,vx0]; diffuseF(1, vx, vx0, visc);
         [vy0,vy] = [vy,vy0]; diffuseF(2, vy, vy0, visc);
+        applyObstacle();
         project(vx, vy, vx0, vy0);
         [vx0,vx] = [vx,vx0]; [vy0,vy] = [vy,vy0];
         advect(1, vx, vx0, vx0, vy0);
         advect(2, vy, vy0, vx0, vy0);
+        applyObstacle();
         project(vx, vy, vx0, vy0);
         [dens0,dens] = [dens,dens0]; diffuseF(0, dens, dens0, diffR);
         [dens0,dens] = [dens,dens0]; advect(0, dens, dens0, vx, vy);
@@ -1454,9 +1512,10 @@
       const img = ctx.createImageData(GW, GH);
       function render() {
         const d = img.data;
+        const scale = current.colorScale;
         for (let y = 0; y < GH; y++) {
           for (let x = 0; x < GW; x++) {
-            const t = Math.max(0, Math.min(1, dens[IDX(x+1,y+1)]*0.35));
+            const t = Math.max(0, Math.min(1, dens[IDX(x+1,y+1)]*scale));
             let r,g,b;
             if (t < 0.5) {
               const s = t*2;
@@ -1469,10 +1528,45 @@
             d[p]=r; d[p+1]=g; d[p+2]=b; d[p+3]=255;
           }
         }
+        if (current.obstacle) {
+          for (let y = 0; y < GH; y++) {
+            for (let x = 0; x < GW; x++) {
+              if (obstacleMask[IDX(x+1,y+1)]) {
+                const p = (y*GW+x)*4;
+                d[p]=13; d[p+1]=16; d[p+2]=20; d[p+3]=255;
+              }
+            }
+          }
+        }
         ctx.putImageData(img, 0, 0);
       }
 
+      function renderCaption() {
+        captionEl.innerHTML = `<strong>f</strong> is the external forcing — injected momentum from the plume nozzles or the inflow, depending on the scenario. Solved with Jos Stam's <em>Stable Fluids</em> method: semi-Lagrangian advection plus a pressure-projection (Poisson solve) enforcing incompressibility.<br><br>${current.caption}`;
+      }
+
+      function loadScenario(id) {
+        current = SCENARIOS[id];
+        vx.fill(0); vy.fill(0); dens.fill(0);
+        vx0.fill(0); vy0.fill(0); dens0.fill(0);
+        t = 0;
+        renderCaption();
+        switchEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+      }
+
+      Object.keys(SCENARIOS).forEach(id => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'attractor-btn';
+        btn.dataset.id = id;
+        btn.textContent = SCENARIOS[id].name;
+        btn.addEventListener('click', () => loadScenario(id));
+        switchEl.appendChild(btn);
+      });
+
       let t = 0;
+      loadScenario('plume');
+
       let lastT = 0;
       const section = canvas.closest('section[data-tab]');
       function animate(ts) {
@@ -1481,10 +1575,10 @@
         if (section && !section.classList.contains('tab-active')) return;
         lastT = ts;
         t += 0.05;
-        const ex = Math.floor(GW*0.5 + Math.sin(t)*GW*0.2);
-        addSource(ex, GH-4, Math.sin(t*1.3)*2, -3, 6);
-        addSource(Math.floor(GW*0.3), GH-4, 1.5, -3, 5);
-        addSource(Math.floor(GW*0.7), GH-4, -1.5, -3, 5);
+        if (current.obstacle) {
+          for (let j = 1; j <= GH; j += 6) { dens[IDX(1,j)] += 4; dens[IDX(2,j)] += 2; }
+        }
+        current.addForces(t, addSource, vx, vy);
         step();
         render();
       }
