@@ -773,8 +773,8 @@
         <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system" target="_blank" rel="noopener noreferrer">Reaction–Diffusion (Gray–Scott)</a>
         <canvas id="rd-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
         <div class="lorenz-eq" id="rd-eq">
-          \[\begin{cases} \dot{u} = D_u \nabla^2 u - uv^2 + F(1-u) \\ \dot{v} = D_v \nabla^2 v + uv^2 - (F+k)v \end{cases}\]
-          \(D_u = 0.16,\ D_v = 0.08,\ F = 0.035,\ k = 0.065\)
+          \[\begin{cases} \dfrac{\partial u}{\partial t} = D_u\,\Delta u - uv^2 + F(1-u) \\[4pt] \dfrac{\partial v}{\partial t} = D_v\,\Delta v + uv^2 - (F+k)v \end{cases}\]
+          \(D_u = 0.16,\quad D_v = 0.08,\quad F = 0.035,\quad k = 0.065\)
         </div>
       </div>
     </section>
@@ -1163,7 +1163,7 @@
       const GW = canvas.width, GH = canvas.height;
       const STRIDE = GW + 2;
 
-      const Du = 0.16, Dv = 0.08, F = 0.035, K = 0.065, SUBSTEPS = 10;
+      const Du = 0.16, Dv = 0.08, F = 0.035, K = 0.065, SUBSTEPS = 30;
 
       let u = new Float32Array(STRIDE * (GH + 2)).fill(1);
       let v = new Float32Array(STRIDE * (GH + 2)).fill(0);
@@ -1241,7 +1241,7 @@
       const section = canvas.closest('section[data-tab]');
       function animate(ts) {
         requestAnimationFrame(animate);
-        if (ts - lastT < 40) return;
+        if (ts - lastT < 33) return;
         if (section && !section.classList.contains('tab-active')) return;
         lastT = ts;
         for (let i = 0; i < SUBSTEPS; i++) step();
