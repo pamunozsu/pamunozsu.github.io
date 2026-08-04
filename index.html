@@ -102,6 +102,14 @@
       line-height: 1.6;
     }
 
+    .research-caption {
+      margin: 8px 4px 0;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
     .research-list {
       margin: 0 0 22px;
       padding-left: 22px;
@@ -717,15 +725,17 @@
         </div>
         <div class="research-figure">
           <img src="research-meq-precond.png" alt="Effect of preconditioning and Tikhonov regularization on Meq reconstruction (L-BFGS)" style="width:100%; height:auto; border-radius:8px; border:1px solid var(--line);" />
+          <div class="research-caption">Magnetization reconstruction under different diffusion coefficients.</div>
         </div>
       </div>
 
       <div class="research-grid" style="margin-top: 22px; align-items: center;">
         <p class="lead">
-          Other parallel work has been at the <a href="https://gema.umayor.cl/" target="_blank" rel="noopener noreferrer">GEMA Center</a>, modeling ecological metacommunity networks with systems of ODEs, studying their robustness to environmental change, maladaptation, and disruptions in the underlying interaction topology. The figure sweeps the coupling parameter κ_R against a second interaction parameter for four increasing values of the diffusion coefficient D₀, with rows showing four summary statistics of the metacommunity (α_w, β_w, γ_w, γ_bio). As D₀ grows toward 10⁻⁴, diffusion smooths out the sharp transitions seen at low D₀ into an almost uniform response.
+          Other parallel work has been at the <a href="https://gema.umayor.cl/" target="_blank" rel="noopener noreferrer">GEMA Center</a>, modeling ecological metacommunity networks with systems of ODEs, studying their robustness to environmental change, maladaptation, and disruptions in the underlying interaction topology.
         </p>
         <div class="research-figure">
           <img src="research-gema-sweep.png" alt="Parameter sweep over diffusion coefficient D0 and log10(kappa_R), rows alpha_w, beta_w, gamma_w, gamma_bio" style="width:100%; height:auto; border-radius:8px; border:1px solid var(--line);" />
+          <div class="research-caption">Metacommunity dynamics under fear vs. hunger prioritization.</div>
         </div>
       </div>
     </section>
