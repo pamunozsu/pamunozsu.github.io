@@ -503,38 +503,52 @@
     }
 
     .axis-frame {
-      position: relative;
-      padding: 4px 4px 22px 30px;
+      display: grid;
+      grid-template-columns: 18px 26px 1fr;
+      grid-template-rows: 20px 1fr 24px;
+      grid-template-areas:
+        ".      .      topx"
+        "ylabel ynums  plot"
+        ".      .      botx";
+      column-gap: 6px;
+      row-gap: 4px;
     }
 
-    .axis-frame .axis-corner {
-      position: absolute;
-      font-size: 0.68rem;
-      color: var(--muted);
-      opacity: 0.75;
-      font-family: monospace;
+    .axis-frame .axis-topx {
+      grid-area: topx;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .axis-frame .axis-tl { top: 0; left: 26px; }
-    .axis-frame .axis-tr { top: 0; right: 4px; }
-    .axis-frame .axis-bl { bottom: 18px; left: 26px; }
-    .axis-frame .axis-label-x {
-      position: absolute;
-      bottom: 0; left: 30px; right: 4px;
-      text-align: center;
-      font-size: 0.7rem;
-      color: var(--muted);
-      opacity: 0.75;
-    }
-    .axis-frame .axis-label-y {
-      position: absolute;
-      top: 4px; bottom: 22px; left: 0;
+    .axis-frame .axis-ylabel {
+      grid-area: ylabel;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
       text-align: center;
-      font-size: 0.7rem;
+    }
+
+    .axis-frame .axis-ynums {
+      grid-area: ynums;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .axis-frame .axis-plot { grid-area: plot; min-width: 0; }
+
+    .axis-frame .axis-botx {
+      grid-area: botx;
+      text-align: center;
+    }
+
+    .axis-frame .axis-topx,
+    .axis-frame .axis-ylabel,
+    .axis-frame .axis-ynums,
+    .axis-frame .axis-botx {
+      font-size: 0.85rem;
       color: var(--muted);
-      opacity: 0.75;
+      font-family: monospace;
     }
 
     footer {
@@ -827,12 +841,13 @@
           <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system" target="_blank" rel="noopener noreferrer">Reaction–Diffusion (Gray–Scott)</a>
           <div class="attractor-switch" id="rd-switch"></div>
           <div class="axis-frame">
-            <span class="axis-corner axis-tl">0</span>
-            <span class="axis-corner axis-tr">140</span>
-            <span class="axis-corner axis-bl">0</span>
-            <span class="axis-label-x">x (grid cells)</span>
-            <span class="axis-label-y">y (grid cells)</span>
-            <canvas id="rd-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
+            <div class="axis-topx"><span>0</span><span>140</span></div>
+            <div class="axis-ylabel">y (grid cells)</div>
+            <div class="axis-ynums"><span>110</span><span>0</span></div>
+            <div class="axis-plot">
+              <canvas id="rd-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
+            </div>
+            <div class="axis-botx">x (grid cells)</div>
           </div>
         </div>
         <div class="lorenz-eq" id="rd-eq"></div>
@@ -898,12 +913,13 @@
           <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations" target="_blank" rel="noopener noreferrer">Navier–Stokes</a>
           <div class="attractor-switch" id="ns-switch"></div>
           <div class="axis-frame">
-            <span class="axis-corner axis-tl">0</span>
-            <span class="axis-corner axis-tr">140</span>
-            <span class="axis-corner axis-bl">0</span>
-            <span class="axis-label-x">x (grid cells)</span>
-            <span class="axis-label-y">y (grid cells)</span>
-            <canvas id="ns-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
+            <div class="axis-topx"><span>0</span><span>140</span></div>
+            <div class="axis-ylabel">y (grid cells)</div>
+            <div class="axis-ynums"><span>110</span><span>0</span></div>
+            <div class="axis-plot">
+              <canvas id="ns-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
+            </div>
+            <div class="axis-botx">x (grid cells)</div>
           </div>
         </div>
         <div class="lorenz-eq" id="ns-eq">
