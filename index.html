@@ -85,6 +85,23 @@
       align-items: start;
     }
 
+    .research-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 0.85fr;
+      gap: 68px;
+      align-items: start;
+    }
+
+    .research-figure-placeholder {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 32px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
     h1 {
       margin: 0 0 28px;
       font-size: 3rem;
@@ -559,7 +576,8 @@
     }
 
     @media (max-width: 920px) {
-      .hero {
+      .hero,
+      .research-grid {
         grid-template-columns: 1fr;
         gap: 34px;
       }
@@ -590,6 +608,7 @@
     <div class="container">
       <nav class="nav">
         <a class="active" href="#about" data-target="about">About</a>
+        <a href="#research" data-target="research">Research</a>
         <a href="#publications" data-target="publications">Publications</a>
         <a href="#talks" data-target="talks">Talks</a>
         <a href="#teaching" data-target="teaching">Teaching</a>
@@ -662,6 +681,23 @@
           <div class="lorenz-eq" id="lorenz-eq"></div>
         </div>
       </aside>
+    </section>
+
+    <section id="research" class="content-section" data-tab>
+      <h2>Research</h2>
+      <div class="research-grid">
+        <div>
+          <p class="lead">
+            My current work, part of the <a href="https://imsc.uni-graz.at/mr-dynamo/projects/idcontrol" target="_blank" rel="noopener noreferrer">IdCONTROL</a> project within the <a href="https://imsc.uni-graz.at/mr-dynamo/" target="_blank" rel="noopener noreferrer">MR-DYNAMO</a> initiative, focuses on parameter identification for the Bloch-Torrey equation, the PDE describing spin magnetization in diffusion MRI. Together with <a href="https://me.aau.at/~bkaltenb/" target="_blank" rel="noopener noreferrer">Barbara Kaltenbacher</a>, I develop and analyze operator splitting schemes for the non-autonomous, multi-term evolution equation, and adjoint-based methods to recover diffusion parameters from measured signal data.
+          </p>
+          <p class="lead">
+            This connects to a broader interest in the numerical analysis of PDEs arising from physical transport and diffusion processes, from the convective Brinkman-Forchheimer equations studied in my master's thesis to the diffusion-driven ecological network models I work on at GEMA. The animated PDE simulations under Talks, Experience, and About come out of the same interest in watching these equations behave, not just prove things about them.
+          </p>
+        </div>
+        <div class="research-figure-placeholder">
+          Result figures from ongoing simulations will go here.
+        </div>
+      </div>
     </section>
 
     <section id="publications" class="content-section" data-tab>
