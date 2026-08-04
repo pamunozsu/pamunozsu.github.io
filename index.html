@@ -489,7 +489,7 @@
 
     .rd-grid {
       display: grid;
-      grid-template-columns: 1.3fr 1fr;
+      grid-template-columns: 0.85fr 1.15fr;
       gap: 32px;
       align-items: center;
       margin-top: 30px;
@@ -498,6 +498,8 @@
     .rd-grid .lorenz-eq {
       margin-top: 0;
       text-align: left;
+      font-size: 1.2rem;
+      line-height: 2.1;
     }
 
     footer {
@@ -786,14 +788,12 @@
       </div>
 
       <div class="rd-grid">
-        <div>
+        <div style="max-width: 300px;">
           <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system" target="_blank" rel="noopener noreferrer">Reaction–Diffusion (Gray–Scott)</a>
+          <div class="attractor-switch" id="rd-switch"></div>
           <canvas id="rd-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
         </div>
-        <div class="lorenz-eq" id="rd-eq">
-          \[\begin{cases} \dfrac{\partial u}{\partial t} = D_u\,\Delta u - uv^2 + F(1-u) \\[4pt] \dfrac{\partial v}{\partial t} = D_v\,\Delta v + uv^2 - (F+k)v \end{cases}\]
-          \(D_u = 0.16,\quad D_v = 0.08,\quad F = 0.035,\quad k = 0.065\)
-        </div>
+        <div class="lorenz-eq" id="rd-eq"></div>
       </div>
     </section>
 
@@ -1180,8 +1180,18 @@
       const ctx = canvas.getContext('2d');
       const GW = canvas.width, GH = canvas.height;
       const STRIDE = GW + 2;
+      const eqEl = document.getElementById('rd-eq');
+      const switchEl = document.getElementById('rd-switch');
 
-      const Du = 0.16, Dv = 0.08, F = 0.035, K = 0.065, SUBSTEPS = 30;
+      const Du = 0.16, Dv = 0.08, SUBSTEPS = 30;
+
+      const PATTERNS = {
+        spots:    { name: 'Spots',    F: 0.035,  K: 0.065 },
+        mitosis:  { name: 'Mitosis',  F: 0.0367, K: 0.0649 },
+        coral:    { name: 'Coral',    F: 0.0545, K: 0.062 },
+        worms:    { name: 'Worms',    F: 0.058,  K: 0.065 }
+      };
+      let current;
 
       let u = new Float32Array(STRIDE * (GH + 2)).fill(1);
       let v = new Float32Array(STRIDE * (GH + 2)).fill(0);
@@ -1218,6 +1228,7 @@
 
       function step() {
         wrap(u); wrap(v);
+        const F = current.F, K = current.K;
         for (let y = 0; y < GH; y++) {
           for (let x = 0; x < GW; x++) {
             const i = IDX(x,y);
@@ -1253,7 +1264,32 @@
         ctx.putImageData(img, 0, 0);
       }
 
-      seed();
+      function renderEq() {
+        eqEl.innerHTML = `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) \\\\[4pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v \\end{cases}\\]
+          \\(D_u = 0.16,\\quad D_v = 0.08,\\quad F = ${current.F},\\quad k = ${current.K}\\)`;
+        if (window.renderMathInElement) {
+          renderMathInElement(eqEl, {delimiters: [{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
+        }
+      }
+
+      function loadPattern(id) {
+        current = PATTERNS[id];
+        seed();
+        renderEq();
+        switchEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+      }
+
+      Object.keys(PATTERNS).forEach(id => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'attractor-btn';
+        btn.dataset.id = id;
+        btn.textContent = PATTERNS[id].name;
+        btn.addEventListener('click', () => loadPattern(id));
+        switchEl.appendChild(btn);
+      });
+
+      loadPattern('spots');
 
       let lastT = 0;
       const section = canvas.closest('section[data-tab]');
