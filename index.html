@@ -768,6 +768,15 @@
 
         </div>
       </div>
+
+      <div class="lorenz-block" style="max-width: 560px; margin: 30px auto 0;">
+        <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system" target="_blank" rel="noopener noreferrer">Reaction–Diffusion (Gray–Scott)</a>
+        <canvas id="rd-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
+        <div class="lorenz-eq" id="rd-eq">
+          \[\begin{cases} \dot{u} = D_u \nabla^2 u - uv^2 + F(1-u) \\ \dot{v} = D_v \nabla^2 v + uv^2 - (F+k)v \end{cases}\]
+          \(D_u = 0.16,\ D_v = 0.08,\ F = 0.035,\ k = 0.065\)
+        </div>
+      </div>
     </section>
 
     <section id="experience" class="content-section" data-tab>
@@ -1142,6 +1151,101 @@
           ctx.fillStyle = `hsla(${(270 - t*220)|0},100%,58%,${(0.35+t*0.5).toFixed(2)})`;
           ctx.fillRect(px, py, 1.6, 1.6);
         }
+      }
+      requestAnimationFrame(animate);
+    })();
+
+    // ── Reaction–diffusion (Gray–Scott) ──
+    (function () {
+      const canvas = document.getElementById('rd-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const GW = canvas.width, GH = canvas.height;
+      const STRIDE = GW + 2;
+
+      const Du = 0.16, Dv = 0.08, F = 0.035, K = 0.065, SUBSTEPS = 10;
+
+      let u = new Float32Array(STRIDE * (GH + 2)).fill(1);
+      let v = new Float32Array(STRIDE * (GH + 2)).fill(0);
+      let u2 = new Float32Array(u.length);
+      let v2 = new Float32Array(v.length);
+
+      function IDX(x, y) { return (y+1)*STRIDE + (x+1); }
+
+      function seed() {
+        u.fill(1); v.fill(0);
+        const blobs = 6 + Math.floor(Math.random()*4);
+        for (let b = 0; b < blobs; b++) {
+          const cx = Math.floor(Math.random()*GW), cy = Math.floor(Math.random()*GH);
+          const r = 3 + Math.floor(Math.random()*3);
+          for (let y = cy-r; y <= cy+r; y++) {
+            for (let x = cx-r; x <= cx+r; x++) {
+              u[IDX((x+GW)%GW, (y+GH)%GH)] = 0.5;
+              v[IDX((x+GW)%GW, (y+GH)%GH)] = 1;
+            }
+          }
+        }
+      }
+
+      function wrap(a) {
+        for (let x = 0; x < GW; x++) {
+          a[IDX(x,-1)] = a[IDX(x,GH-1)];
+          a[IDX(x,GH)] = a[IDX(x,0)];
+        }
+        for (let y = -1; y <= GH; y++) {
+          a[IDX(-1,y)] = a[IDX(GW-1,y)];
+          a[IDX(GW,y)] = a[IDX(0,y)];
+        }
+      }
+
+      function step() {
+        wrap(u); wrap(v);
+        for (let y = 0; y < GH; y++) {
+          for (let x = 0; x < GW; x++) {
+            const i = IDX(x,y);
+            const uc = u[i], vc = v[i];
+            const lu = u[IDX(x-1,y)]+u[IDX(x+1,y)]+u[IDX(x,y-1)]+u[IDX(x,y+1)]-4*uc;
+            const lv = v[IDX(x-1,y)]+v[IDX(x+1,y)]+v[IDX(x,y-1)]+v[IDX(x,y+1)]-4*vc;
+            const reac = uc*vc*vc;
+            u2[i] = uc + (Du*lu - reac + F*(1-uc));
+            v2[i] = vc + (Dv*lv + reac - (F+K)*vc);
+          }
+        }
+        [u,u2] = [u2,u]; [v,v2] = [v2,v];
+      }
+
+      const img = ctx.createImageData(GW, GH);
+      function render() {
+        const d = img.data;
+        for (let y = 0; y < GH; y++) {
+          for (let x = 0; x < GW; x++) {
+            const t = Math.max(0, Math.min(1, v[IDX(x,y)]*2.2));
+            let r,g,b;
+            if (t < 0.5) {
+              const s = t*2;
+              r = 16+(78-16)*s; g = 20+(163-20)*s; b = 25+(216-25)*s;
+            } else {
+              const s = (t-0.5)*2;
+              r = 78+(242-78)*s; g = 163+(244-163)*s; b = 216+(247-216)*s;
+            }
+            const p = (y*GW+x)*4;
+            d[p]=r; d[p+1]=g; d[p+2]=b; d[p+3]=255;
+          }
+        }
+        ctx.putImageData(img, 0, 0);
+      }
+
+      seed();
+
+      let lastT = 0;
+      const section = canvas.closest('section[data-tab]');
+      function animate(ts) {
+        requestAnimationFrame(animate);
+        if (ts - lastT < 40) return;
+        if (section && !section.classList.contains('tab-active')) return;
+        lastT = ts;
+        for (let i = 0; i < SUBSTEPS; i++) step();
+        render();
       }
       requestAnimationFrame(animate);
     })();
