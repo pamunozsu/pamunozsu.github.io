@@ -1390,8 +1390,8 @@
           }
         },
         laminar: {
-          name: 'Laminar', visc: 0.00004, colorScale: 0.045, obstacle: true, streaklines: true,
-          caption: 'Low Reynolds number (ν=4×10⁻⁵): smooth, steady inflow gliding around a fixed cylinder — no shedding.',
+          name: 'Laminar', visc: 0.00004, obstacle: true, colorMode: 'vorticity',
+          caption: 'Low Reynolds number (ν=4×10⁻⁵): color shows vorticity ω=∂v/∂x−∂u/∂y (blue = clockwise, orange = counter-clockwise). Barely any rotation forms — the wake stays smooth.',
           addForces(t, addSource, vx) {
             for (let j = 1; j <= GH; j++) {
               vx[IDX(1,j)] += 1.8; vx[IDX(2,j)] += 1.26; vx[IDX(3,j)] += 0.72;
@@ -1399,20 +1399,18 @@
           }
         },
         turbulent: {
-          name: 'Turbulent', visc: 0.00003, colorScale: 0.3, obstacle: true, streaklines: false,
-          caption: 'High Reynolds number (ν=3×10⁻⁵): fast inflow past the cylinder sheds alternating vortices — a von Kármán vortex street. Dye is released right at the two separation points on the cylinder, so each shed vortex is traced from birth.',
-          addForces(t, addSource, vx, vy, dens) {
+          name: 'Turbulent', visc: 0.00003, obstacle: true, colorMode: 'vorticity',
+          caption: 'High Reynolds number (ν=3×10⁻⁵): same vorticity field, but alternating blue/orange blobs peel off the cylinder and drift downstream — a von Kármán vortex street.',
+          addForces(t, addSource, vx, vy) {
             for (let j = 1; j <= GH; j++) {
               vx[IDX(1,j)] += 2.2; vx[IDX(2,j)] += 1.54; vx[IDX(3,j)] += 0.88;
             }
-            const py1 = OB_CY - OB_R - 1, py2 = OB_CY + OB_R + 1;
-            dens[IDX(OB_CX,py1)] += 6; dens[IDX(OB_CX+1,py1)] += 4;
-            dens[IDX(OB_CX,py2)] += 6; dens[IDX(OB_CX+1,py2)] += 4;
             const px = OB_CX + OB_R + 2;
             vy[IDX(px, OB_CY)] += 2.0*Math.sin(t*3);
           }
         }
       };
+      const VORT_SCALE = 8;
       let current;
 
       let vx = new Float32Array(SIZE), vy = new Float32Array(SIZE);
@@ -1513,7 +1511,7 @@
       }
 
       const img = ctx.createImageData(GW, GH);
-      function render() {
+      function renderDensity() {
         const d = img.data;
         const scale = current.colorScale;
         for (let y = 0; y < GH; y++) {
@@ -1531,6 +1529,30 @@
             d[p]=r; d[p+1]=g; d[p+2]=b; d[p+3]=255;
           }
         }
+      }
+
+      function renderVorticity() {
+        const d = img.data;
+        for (let y = 0; y < GH; y++) {
+          for (let x = 0; x < GW; x++) {
+            const w = (vy[IDX(x+2,y+1)]-vy[IDX(x,y+1)])*0.5 - (vx[IDX(x+1,y+2)]-vx[IDX(x+1,y)])*0.5;
+            const t = Math.max(-1, Math.min(1, w*VORT_SCALE));
+            let r,g,b;
+            if (t >= 0) {
+              r = 13+(230-13)*t; g = 16+(140-16)*t; b = 20+(60-20)*t;
+            } else {
+              const s = -t;
+              r = 13+(78-13)*s; g = 16+(163-16)*s; b = 20+(216-20)*s;
+            }
+            const p = (y*GW+x)*4;
+            d[p]=r; d[p+1]=g; d[p+2]=b; d[p+3]=255;
+          }
+        }
+      }
+
+      function render() {
+        const d = img.data;
+        if (current.colorMode === 'vorticity') renderVorticity(); else renderDensity();
         if (current.obstacle) {
           for (let y = 0; y < GH; y++) {
             for (let x = 0; x < GW; x++) {
@@ -1581,9 +1603,6 @@
         lastT = ts;
         t += 0.05;
         frameCount++;
-        if (current.streaklines) {
-          for (let j = 1; j <= GH; j += 6) { dens[IDX(1,j)] += 4; dens[IDX(2,j)] += 2; }
-        }
         current.addForces(t, addSource, vx, vy, dens, frameCount);
         step();
         render();
