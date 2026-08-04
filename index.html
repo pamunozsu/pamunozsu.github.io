@@ -1456,12 +1456,12 @@
         },
         laminar: {
           name: 'Laminar', visc: 0.00004, obstacle: true, colorMode: 'vorticity', inflow: 1.8,
-          caption: 'Low Reynolds number (ν=4×10⁻⁵): color shows vorticity ω=∂v/∂x−∂u/∂y (blue = clockwise, orange = counter-clockwise). Barely any rotation forms — the wake stays smooth.',
+          caption: 'Low Reynolds number (ν=4×10⁻⁵): color shows vorticity ω=∂v/∂x−∂u/∂y (blue = clockwise, orange = counter-clockwise). Barely any rotation forms, so the wake stays smooth.',
           perturb() { return 0; }
         },
         turbulent: {
           name: 'Turbulent', visc: 0.00003, obstacle: true, colorMode: 'vorticity', inflow: 2.2, shedMarkers: true,
-          caption: 'High Reynolds number (ν=3×10⁻⁵): alternating vortex cores (marked) are shed from the cylinder and convected downstream — a von Kármán vortex street. Their spacing/rotation is drawn from the classical point-vortex model of the street, layered on top of the solved vorticity field.',
+          caption: 'High Reynolds number (ν=3×10⁻⁵): alternating vortex cores are shed from the cylinder and convected downstream, forming a von Kármán vortex street. Their spacing and rotation are drawn from the classical point-vortex model of the street, layered on top of the solved vorticity field.',
           perturb(t) { return 2.0*Math.sin(t*3); }
         }
       };
@@ -1662,7 +1662,7 @@
       }
 
       function renderCaption() {
-        captionEl.innerHTML = `<strong>f</strong> is the external forcing — injected momentum from the plume nozzles or the inflow, depending on the scenario. Solved with Jos Stam's <em>Stable Fluids</em> method: semi-Lagrangian advection plus a pressure-projection (Poisson solve) enforcing incompressibility.<br><br>${current.caption}`;
+        captionEl.innerHTML = `<strong>f</strong> is the external forcing, the injected momentum from the plume nozzles or the inflow, depending on the scenario. Solved with Jos Stam's <em>Stable Fluids</em> method: semi-Lagrangian advection plus a pressure-projection (Poisson solve) enforcing incompressibility.<br><br>${current.caption}`;
       }
 
       function loadScenario(id) {
