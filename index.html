@@ -489,7 +489,7 @@
 
     .rd-grid {
       display: grid;
-      grid-template-columns: 0.85fr 1.15fr;
+      grid-template-columns: 1fr 1fr;
       gap: 32px;
       align-items: center;
       margin-top: 30px;
@@ -497,7 +497,7 @@
 
     .rd-grid .lorenz-eq {
       margin-top: 0;
-      text-align: left;
+      text-align: center;
       font-size: 1.2rem;
       line-height: 2.1;
     }
@@ -788,7 +788,7 @@
       </div>
 
       <div class="rd-grid">
-        <div style="max-width: 300px;">
+        <div>
           <a class="lorenz-title" href="https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system" target="_blank" rel="noopener noreferrer">Reaction–Diffusion (Gray–Scott)</a>
           <div class="attractor-switch" id="rd-switch"></div>
           <canvas id="rd-canvas" width="140" height="110" style="display:block; width:100%; height:auto; border-radius:8px; opacity:0.95;"></canvas>
@@ -1265,8 +1265,8 @@
       }
 
       function renderEq() {
-        eqEl.innerHTML = `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) \\\\[4pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v \\end{cases}\\]
-          \\(D_u = 0.16,\\quad D_v = 0.08,\\quad F = ${current.F},\\quad k = ${current.K}\\)`;
+        eqEl.innerHTML = `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) & \\!\\!D_u = 0.16 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v & \\!\\!D_v = 0.08 \\end{cases}\\]
+          \\(F = ${current.F},\\quad k = ${current.K}\\)`;
         if (window.renderMathInElement) {
           renderMathInElement(eqEl, {delimiters: [{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
         }
