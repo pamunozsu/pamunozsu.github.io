@@ -1390,7 +1390,7 @@
           }
         },
         laminar: {
-          name: 'Laminar', visc: 0.00004, colorScale: 0.045, obstacle: true,
+          name: 'Laminar', visc: 0.00004, colorScale: 0.045, obstacle: true, streaklines: true,
           caption: 'Low Reynolds number (ν=4×10⁻⁵): smooth, steady inflow gliding around a fixed cylinder — no shedding.',
           addForces(t, addSource, vx) {
             for (let j = 1; j <= GH; j++) {
@@ -1399,27 +1399,17 @@
           }
         },
         turbulent: {
-          name: 'Turbulent', visc: 0.00003, colorScale: 0.045, obstacle: true,
-          caption: 'High Reynolds number (ν=3×10⁻⁵): fast inflow past the cylinder sheds alternating vortices — a von Kármán vortex street.',
-          shedPeriod: 45,
-          addForces(t, addSource, vx, vy, dens, frameCount) {
+          name: 'Turbulent', visc: 0.00003, colorScale: 0.3, obstacle: true, streaklines: false,
+          caption: 'High Reynolds number (ν=3×10⁻⁵): fast inflow past the cylinder sheds alternating vortices — a von Kármán vortex street. Dye is released right at the two separation points on the cylinder, so each shed vortex is traced from birth.',
+          addForces(t, addSource, vx, vy, dens) {
             for (let j = 1; j <= GH; j++) {
               vx[IDX(1,j)] += 2.2; vx[IDX(2,j)] += 1.54; vx[IDX(3,j)] += 0.88;
             }
-            const phase = Math.floor(frameCount / this.shedPeriod) % 2;
-            const sign = phase === 0 ? 1 : -1;
-            const cx = OB_CX + OB_R + 2;
-            const cy = Math.round(OB_CY + sign*OB_R*0.6);
-            for (let dy = -2; dy <= 2; dy++) {
-              for (let dx = -2; dx <= 2; dx++) {
-                const xx = cx+dx, yy = cy+dy;
-                if (xx < 1 || xx > GW || yy < 1 || yy > GH) continue;
-                const idx = IDX(xx, yy);
-                vy[idx] += sign*1.2;
-                vx[idx] += 0.3;
-                dens[idx] += 8;
-              }
-            }
+            const py1 = OB_CY - OB_R - 1, py2 = OB_CY + OB_R + 1;
+            dens[IDX(OB_CX,py1)] += 6; dens[IDX(OB_CX+1,py1)] += 4;
+            dens[IDX(OB_CX,py2)] += 6; dens[IDX(OB_CX+1,py2)] += 4;
+            const px = OB_CX + OB_R + 2;
+            vy[IDX(px, OB_CY)] += 2.0*Math.sin(t*3);
           }
         }
       };
@@ -1591,7 +1581,7 @@
         lastT = ts;
         t += 0.05;
         frameCount++;
-        if (current.obstacle) {
+        if (current.streaklines) {
           for (let j = 1; j <= GH; j += 6) { dens[IDX(1,j)] += 4; dens[IDX(2,j)] += 2; }
         }
         current.addForces(t, addSource, vx, vy, dens, frameCount);
