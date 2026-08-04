@@ -968,7 +968,7 @@
           name: 'Lorenz Attractor',
           link: 'https://en.wikipedia.org/wiki/Lorenz_system',
           box: { XL: -25, XH: 25, YL: -30, YH: 30, ZL: 0, ZH: 50, GS: 10 },
-          scale: 3.6, oy: 255, dt: 0.005, stepsPerFrame: 10,
+          scale: 3.6, oy: 255, dt: 0.005, stepsPerFrame: 15,
           init: () => [0.1, 0, 0],
           deriv: (x, y, z) => {
             const sigma = 10, rho = 28, beta = 8 / 3;
@@ -981,7 +981,7 @@
           name: 'Aizawa Attractor',
           link: 'https://www.algosome.com/articles/aizawa-attractor-chaos.html',
           box: { XL: -2, XH: 2, YL: -2, YH: 2, ZL: -1, ZH: 2, GS: 1 },
-          scale: 50, oy: 205, dt: 0.01, stepsPerFrame: 7,
+          scale: 50, oy: 205, dt: 0.01, stepsPerFrame: 11,
           init: () => [0.1, 0, 0],
           deriv: (x, y, z) => {
             const a = 0.95, b = 0.7, c = 0.6, d = 3.5, e = 0.25, f = 0.1;
@@ -994,7 +994,7 @@
           name: 'Chua Attractor',
           link: 'https://en.wikipedia.org/wiki/Chua%27s_circuit',
           box: { XL: -2.5, XH: 2.5, YL: -0.6, YH: 0.6, ZL: -4, ZH: 4, GS: 1 },
-          scale: 23, oy: 160, dt: 0.002, stepsPerFrame: 30,
+          scale: 23, oy: 160, dt: 0.002, stepsPerFrame: 45,
           init: () => [0.7, 0, 0],
           deriv: (x, y, z) => {
             const alpha = 15.6, beta = 28, m0 = -8/7, m1 = -5/7;
@@ -1015,7 +1015,7 @@
       let AZ, cosAZ, sinAZ;
       let sx, sy, sz;
       let trail = [];
-      const MAX_TRAIL = 2500;
+      const MAX_TRAIL = 4500;
 
       function proj(px, py, pz) {
         const rx = px * cosAZ - py * sinAZ;
@@ -1066,7 +1066,7 @@
         if (trail.length > MAX_TRAIL) trail.shift();
       }
 
-      const BUCKETS = 20;
+      const BUCKETS = 30;
       function drawTrail() {
         const N = trail.length;
         if (N < 2) return;
@@ -1103,7 +1103,7 @@
         trail = [];
         for (let i = 0; i < 1000; i++) step();
         trail = [];
-        for (let i = 0; i < 600; i++) step();
+        for (let i = 0; i < 2000; i++) step();
 
         titleEl.textContent = current.name;
         titleEl.href = current.link;
