@@ -1183,14 +1183,34 @@
       const eqEl = document.getElementById('rd-eq');
       const switchEl = document.getElementById('rd-switch');
 
-      const Du = 0.16, Dv = 0.08, SUBSTEPS = 30;
+      function gs(F, K) {
+        return (u, v) => { const r = u*v*v; return [-r + F*(1-u), r - (F+K)*v]; };
+      }
 
       const PATTERNS = {
-        spots:    { name: 'Spots',    F: 0.035,  K: 0.065 },
-        mitosis:  { name: 'Mitosis',  F: 0.0367, K: 0.0649 },
-        coral:    { name: 'Coral',    F: 0.0545, K: 0.062 },
-        worms:    { name: 'Worms',    F: 0.058,  K: 0.065 }
+        spots:   { name: 'Spots',   Du: 0.16, Dv: 0.08, dt: 1, seedType: 'blobs',
+                   reaction: gs(0.035, 0.065),
+                   eq: `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) & \\!\\!D_u = 0.16 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v & \\!\\!D_v = 0.08 \\end{cases}\\]
+                        \\(F = 0.035,\\quad k = 0.065\\)` },
+        mitosis: { name: 'Mitosis', Du: 0.16, Dv: 0.08, dt: 1, seedType: 'blobs',
+                   reaction: gs(0.0367, 0.0649),
+                   eq: `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) & \\!\\!D_u = 0.16 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v & \\!\\!D_v = 0.08 \\end{cases}\\]
+                        \\(F = 0.0367,\\quad k = 0.0649\\)` },
+        coral:   { name: 'Coral',   Du: 0.16, Dv: 0.08, dt: 1, seedType: 'blobs',
+                   reaction: gs(0.0545, 0.062),
+                   eq: `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) & \\!\\!D_u = 0.16 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v & \\!\\!D_v = 0.08 \\end{cases}\\]
+                        \\(F = 0.0545,\\quad k = 0.062\\)` },
+        worms:   { name: 'Worms',   Du: 0.16, Dv: 0.08, dt: 1, seedType: 'blobs',
+                   reaction: gs(0.058, 0.065),
+                   eq: `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) & \\!\\!D_u = 0.16 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v & \\!\\!D_v = 0.08 \\end{cases}\\]
+                        \\(F = 0.058,\\quad k = 0.065\\)` },
+        fhn:     { name: 'FitzHugh–Nagumo', Du: 1, Dv: 0, dt: 0.1, seedType: 'wavebreak',
+                   colorField: 'u', colorOffset: -0.5, colorScale: 0.72,
+                   reaction: (u, v) => { const a = -0.02, eps = 0.015, gamma = 0.6; return [u*(1-u)*(u-a) - v, eps*(u - gamma*v)]; },
+                   eq: `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u + u(1-u)(u-a) - v & \\!\\!D_u = 1 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = \\varepsilon(u - \\gamma v) \\end{cases}\\]
+                        \\(a = -0.02,\\quad \\varepsilon = 0.015,\\quad \\gamma = 0.6\\)` }
       };
+      const SUBSTEPS = 30;
       let current;
 
       let u = new Float32Array(STRIDE * (GH + 2)).fill(1);
@@ -1200,7 +1220,7 @@
 
       function IDX(x, y) { return (y+1)*STRIDE + (x+1); }
 
-      function seed() {
+      function seedBlobs() {
         u.fill(1); v.fill(0);
         const blobs = 6 + Math.floor(Math.random()*4);
         for (let b = 0; b < blobs; b++) {
@@ -1213,6 +1233,22 @@
             }
           }
         }
+      }
+
+      function seedWaveBreak() {
+        u.fill(0); v.fill(0);
+        for (let y = 0; y < GH; y++) {
+          for (let x = 0; x < GW; x++) {
+            const i = IDX(x,y);
+            if (x < GW*0.5) u[i] = 1;
+            if (y < GH*0.5) v[i] = 0.3;
+          }
+        }
+      }
+
+      function seed() {
+        if (current.seedType === 'wavebreak') seedWaveBreak();
+        else seedBlobs();
       }
 
       function wrap(a) {
@@ -1228,16 +1264,16 @@
 
       function step() {
         wrap(u); wrap(v);
-        const F = current.F, K = current.K;
+        const Du = current.Du, Dv = current.Dv, dt = current.dt, reaction = current.reaction;
         for (let y = 0; y < GH; y++) {
           for (let x = 0; x < GW; x++) {
             const i = IDX(x,y);
             const uc = u[i], vc = v[i];
             const lu = u[IDX(x-1,y)]+u[IDX(x+1,y)]+u[IDX(x,y-1)]+u[IDX(x,y+1)]-4*uc;
             const lv = v[IDX(x-1,y)]+v[IDX(x+1,y)]+v[IDX(x,y-1)]+v[IDX(x,y+1)]-4*vc;
-            const reac = uc*vc*vc;
-            u2[i] = uc + (Du*lu - reac + F*(1-uc));
-            v2[i] = vc + (Dv*lv + reac - (F+K)*vc);
+            const [reacU, reacV] = reaction(uc, vc);
+            u2[i] = uc + dt*(Du*lu + reacU);
+            v2[i] = vc + dt*(Dv*lv + reacV);
           }
         }
         [u,u2] = [u2,u]; [v,v2] = [v2,v];
@@ -1246,9 +1282,12 @@
       const img = ctx.createImageData(GW, GH);
       function render() {
         const d = img.data;
+        const field = current.colorField === 'u' ? u : v;
+        const offset = current.colorOffset || 0;
+        const scale = current.colorScale || 2.2;
         for (let y = 0; y < GH; y++) {
           for (let x = 0; x < GW; x++) {
-            const t = Math.max(0, Math.min(1, v[IDX(x,y)]*2.2));
+            const t = Math.max(0, Math.min(1, (field[IDX(x,y)] - offset) * scale));
             let r,g,b;
             if (t < 0.5) {
               const s = t*2;
@@ -1265,8 +1304,7 @@
       }
 
       function renderEq() {
-        eqEl.innerHTML = `\\[\\begin{cases} \\dfrac{\\partial u}{\\partial t} = D_u\\,\\Delta u - uv^2 + F(1-u) & \\!\\!D_u = 0.16 \\\\[8pt] \\dfrac{\\partial v}{\\partial t} = D_v\\,\\Delta v + uv^2 - (F+k)v & \\!\\!D_v = 0.08 \\end{cases}\\]
-          \\(F = ${current.F},\\quad k = ${current.K}\\)`;
+        eqEl.innerHTML = current.eq;
         if (window.renderMathInElement) {
           renderMathInElement(eqEl, {delimiters: [{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
         }
