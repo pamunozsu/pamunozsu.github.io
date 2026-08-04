@@ -1390,24 +1390,14 @@
           }
         },
         laminar: {
-          name: 'Laminar', visc: 0.00004, obstacle: true, colorMode: 'vorticity',
+          name: 'Laminar', visc: 0.00004, obstacle: true, colorMode: 'vorticity', inflow: 1.8,
           caption: 'Low Reynolds number (ν=4×10⁻⁵): color shows vorticity ω=∂v/∂x−∂u/∂y (blue = clockwise, orange = counter-clockwise). Barely any rotation forms — the wake stays smooth.',
-          addForces(t, addSource, vx) {
-            for (let j = 1; j <= GH; j++) {
-              vx[IDX(1,j)] += 1.8; vx[IDX(2,j)] += 1.26; vx[IDX(3,j)] += 0.72;
-            }
-          }
+          perturb() { return 0; }
         },
         turbulent: {
-          name: 'Turbulent', visc: 0.00003, obstacle: true, colorMode: 'vorticity',
+          name: 'Turbulent', visc: 0.00003, obstacle: true, colorMode: 'vorticity', inflow: 2.2,
           caption: 'High Reynolds number (ν=3×10⁻⁵): same vorticity field, but alternating blue/orange blobs peel off the cylinder and drift downstream — a von Kármán vortex street.',
-          addForces(t, addSource, vx, vy) {
-            for (let j = 1; j <= GH; j++) {
-              vx[IDX(1,j)] += 2.2; vx[IDX(2,j)] += 1.54; vx[IDX(3,j)] += 0.88;
-            }
-            const px = OB_CX + OB_R + 2;
-            vy[IDX(px, OB_CY)] += 2.0*Math.sin(t*3);
-          }
+          perturb(t) { return 2.0*Math.sin(t*3); }
         }
       };
       const VORT_SCALE = 8;
@@ -1493,18 +1483,32 @@
         }
       }
 
+      function pinInflow() {
+        if (current.inflow == null) return;
+        for (let j = 1; j <= GH; j++) {
+          for (let i = 1; i <= 6; i++) vx[IDX(i,j)] = current.inflow;
+        }
+      }
+
       function step() {
         const visc = current.visc;
+        pinInflow();
         applyObstacle();
         [vx0,vx] = [vx,vx0]; diffuseF(1, vx, vx0, visc);
         [vy0,vy] = [vy,vy0]; diffuseF(2, vy, vy0, visc);
+        pinInflow();
         applyObstacle();
         project(vx, vy, vx0, vy0);
         [vx0,vx] = [vx,vx0]; [vy0,vy] = [vy,vy0];
         advect(1, vx, vx0, vx0, vy0);
         advect(2, vy, vy0, vx0, vy0);
+        pinInflow();
         applyObstacle();
         project(vx, vy, vx0, vy0);
+        if (current.perturb) {
+          const px = OB_CX + OB_R + 2;
+          vy[IDX(px, OB_CY)] += current.perturb(t);
+        }
         [dens0,dens] = [dens,dens0]; diffuseF(0, dens, dens0, diffR);
         [dens0,dens] = [dens,dens0]; advect(0, dens, dens0, vx, vy);
         for (let i = 0; i < SIZE; i++) dens[i] *= 0.995;
@@ -1603,7 +1607,7 @@
         lastT = ts;
         t += 0.05;
         frameCount++;
-        current.addForces(t, addSource, vx, vy, dens, frameCount);
+        if (current.addForces) current.addForces(t, addSource, vx, vy, dens, frameCount);
         step();
         render();
       }
